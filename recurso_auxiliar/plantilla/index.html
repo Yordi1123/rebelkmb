@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlanFlow ERP | Planificación y Producción</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">PF</div>
+        <div>
+          <strong>PlanFlow</strong>
+          <span>ERP Producción</span>
+        </div>
+      </div>
+
+      <div class="company-switch">
+        <span>Empresa</span>
+        <strong>Industrias Boyer</strong>
+        <small>● Operación normal</small>
+      </div>
+
+      <nav>
+        <p class="nav-title">PRINCIPAL</p>
+        <button class="nav-item active" data-section="dashboard">⌂ <span>Dashboard</span></button>
+        <button class="nav-item" data-section="pedidos">▣ <span>Pedidos / Ventas</span></button>
+        <button class="nav-item" data-section="pronosticos">◔ <span>Pronósticos</span></button>
+        <button class="nav-item" data-section="mps">◫ <span>MPS</span></button>
+        <button class="nav-item" data-section="mrp">⚙ <span>MRP</span></button>
+
+        <p class="nav-title">OPERACIONES</p>
+        <button class="nav-item" data-section="inventarios">▤ <span>Inventarios</span></button>
+        <button class="nav-item" data-section="compras">⇄ <span>Compras</span></button>
+        <button class="nav-item" data-section="produccion">▦ <span>Producción</span></button>
+        <button class="nav-item" data-section="lotes">◉ <span>Lotes / Trazabilidad</span></button>
+        <button class="nav-item" data-section="terminados">✓ <span>Producto terminado</span></button>
+
+        <p class="nav-title">GESTIÓN</p>
+        <button class="nav-item" data-section="reportes">▥ <span>Reportes</span></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar">AB</div>
+        <div>
+          <strong>Administrador</strong>
+          <span>Planificación</span>
+        </div>
+        <button class="icon-btn">⋮</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu">☰</button>
+        <div class="breadcrumbs"><span>Inicio</span><b>/</b><strong id="breadcrumb">Dashboard</strong></div>
+        <div class="top-actions">
+          <button class="icon-btn notification">♢<i></i></button>
+          <div class="date-chip">15 AGO 2026</div>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="section active" id="dashboard">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">CENTRO DE CONTROL</p>
+              <h1>Dashboard general</h1>
+              <p>Monitorea demanda, abastecimiento, producción e inventario en un solo lugar.</p>
+            </div>
+            <button class="primary-btn" onclick="showToast('Reporte actualizado correctamente')">↻ Actualizar datos</button>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-icon purple">▣</div>
+              <div><span>Pedidos activos</span><strong>248</strong><small class="up">↑ 12.4% vs. mes anterior</small></div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon blue">◫</div>
+              <div><span>Producción planificada</span><strong>8,420 <em>u.</em></strong><small class="up">↑ 8.7% esta semana</small></div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon orange">▤</div>
+              <div><span>Stock de materias primas</span><strong>76.8<em>%</em></strong><small class="down">↓ 3.2% nivel disponible</small></div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon green">✓</div>
+              <div><span>Despachos a tiempo</span><strong>94.6<em>%</em></strong><small class="up">↑ 2.1% cumplimiento</small></div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="panel chart-panel">
+              <div class="panel-head">
+                <div><h2>Demanda vs. Pronóstico</h2><span>Últimos 8 periodos</span></div>
+                <select><option>Mensual</option><option>Semanal</option></select>
+              </div>
+              <canvas id="demandChart"></canvas>
+            </div>
+            <div class="panel chart-panel">
+              <div class="panel-head">
+                <div><h2>Estado del inventario</h2><span>Por categoría</span></div>
+                <button class="more-btn">•••</button>
+              </div>
+              <canvas id="inventoryChart"></canvas>
+            </div>
+          </div>
+
+          <div class="grid-2 lower">
+            <div class="panel">
+              <div class="panel-head">
+                <div><h2>Flujo de planificación</h2><span>Estado actual del proceso</span></div>
+              </div>
+              <div class="flow">
+                <div class="flow-item done"><b>01</b><span>Pedidos</span><strong>248</strong></div>
+                <div class="flow-line"></div>
+                <div class="flow-item done"><b>02</b><span>Pronóstico</span><strong>96%</strong></div>
+                <div class="flow-line"></div>
+                <div class="flow-item current"><b>03</b><span>MPS</span><strong>82%</strong></div>
+                <div class="flow-line"></div>
+                <div class="flow-item"><b>04</b><span>MRP</span><strong>64%</strong></div>
+                <div class="flow-line"></div>
+                <div class="flow-item"><b>05</b><span>Compras</span><strong>31</strong></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><div><h2>Alertas operativas</h2><span>Requieren atención</span></div><span class="badge danger">6 activas</span></div>
+              <div class="alerts">
+                <div class="alert"><span class="alert-dot red"></span><div><strong>Stock mínimo</strong><p>MP-1042 · Acero laminado</p></div><b>Crítico</b></div>
+                <div class="alert"><span class="alert-dot yellow"></span><div><strong>Lead time</strong><p>Proveedor PR-018 · 9 días</p></div><b>Revisar</b></div>
+                <div class="alert"><span class="alert-dot yellow"></span><div><strong>Lote próximo a vencer</strong><p>LT-260811 · Producto A</p></div><b>Revisar</b></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="pedidos"><div class="page-heading"><div><p class="eyebrow">DEMANDA</p><h1>Pedidos / Ventas</h1><p>Captura y seguimiento de la demanda de clientes.</p></div><button class="primary-btn" onclick="showToast('Nuevo pedido creado')">+ Nuevo pedido</button></div><div class="stats-row"><div class="mini-stat"><span>Pedidos hoy</span><strong>37</strong></div><div class="mini-stat"><span>En proceso</span><strong>124</strong></div><div class="mini-stat"><span>Despachados</span><strong>87</strong></div><div class="mini-stat"><span>Cancelados</span><strong>4</strong></div></div><div class="panel table-panel"><div class="panel-head"><div><h2>Pedidos recientes</h2><span>Últimas órdenes registradas</span></div><input class="search" placeholder="Buscar pedido..."></div><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Fecha</th><th>Productos</th><th>Total</th><th>Estado</th></tr></thead><tbody><tr><td>#PED-10482</td><td>Comercial Norte</td><td>15/08/2026</td><td>120 u.</td><td>S/ 18,420</td><td><span class="status green">En producción</span></td></tr><tr><td>#PED-10481</td><td>Distribuidora Sur</td><td>15/08/2026</td><td>85 u.</td><td>S/ 12,850</td><td><span class="status blue">Planificado</span></td></tr><tr><td>#PED-10480</td><td>Grupo Industrial SAC</td><td>14/08/2026</td><td>240 u.</td><td>S/ 31,200</td><td><span class="status green">Listo</span></td></tr></tbody></table></div></section>
+
+        <section class="section" id="pronosticos"><div class="page-heading"><div><p class="eyebrow">PLANIFICACIÓN</p><h1>Pronósticos de demanda</h1><p>Estima la demanda futura y controla el método de pronóstico.</p></div><button class="primary-btn" onclick="showToast('Pronóstico recalculado')">↻ Recalcular</button></div><div class="grid-2"><div class="panel chart-panel tall"><div class="panel-head"><div><h2>Pronóstico por periodo</h2><span>Método: Promedio móvil ponderado</span></div></div><canvas id="forecastChart"></canvas></div><div class="panel parameter-panel"><h2>Parámetros</h2><div class="form-grid"><label>Periodo de pronóstico<select><option>12 meses</option><option>6 meses</option><option>3 meses</option></select></label><label>Método<select><option>Promedio móvil ponderado</option><option>Suavización exponencial</option><option>Regresión lineal</option></select></label><label>α de suavización<input value="0.35"></label><label>Horizonte<input value="8 periodos"></label></div><div class="accuracy"><span>Precisión del modelo</span><strong>92.8%</strong><div class="progress"><i style="width:92.8%"></i></div></div></div></div></section>
+
+        <section class="section" id="mps"><div class="page-heading"><div><p class="eyebrow">PLAN MAESTRO</p><h1>MPS — Plan Maestro de Producción</h1><p>Convierte la demanda en un programa de producción.</p></div><button class="primary-btn" onclick="showToast('MPS generado para los próximos 30 días')">Generar MPS</button></div><div class="panel table-panel"><div class="panel-head"><div><h2>Programa maestro</h2><span>Próximos 14 días</span></div><span class="badge blue">MPS activo</span></div><table><thead><tr><th>Producto</th><th>Stock inicial</th><th>Demanda</th><th>Producción</th><th>Stock final</th><th>Estado</th></tr></thead><tbody><tr><td>Producto A</td><td>480</td><td>620</td><td>800</td><td>660</td><td><span class="status green">Cubierto</span></td></tr><tr><td>Producto B</td><td>210</td><td>390</td><td>500</td><td>320</td><td><span class="status green">Cubierto</span></td></tr><tr><td>Producto C</td><td>95</td><td>280</td><td>300</td><td>115</td><td><span class="status yellow">Ajustar</span></td></tr></tbody></table></div></section>
+
+        <section class="section" id="mrp"><div class="page-heading"><div><p class="eyebrow">ABASTECIMIENTO</p><h1>MRP — Planificación de materiales</h1><p>Calcula necesidades, órdenes de compra y fechas de abastecimiento.</p></div><button class="primary-btn" onclick="showToast('MRP ejecutado correctamente')">Ejecutar MRP</button></div><div class="kpi-grid three"><div class="kpi-card"><div class="kpi-icon orange">!</div><div><span>Necesidades netas</span><strong>1,842 <em>u.</em></strong></div></div><div class="kpi-card"><div class="kpi-icon blue">⇄</div><div><span>Órdenes sugeridas</span><strong>31</strong></div></div><div class="kpi-card"><div class="kpi-icon green">✓</div><div><span>Abastecimiento</span><strong>88.4<em>%</em></strong></div></div></div><div class="panel table-panel"><div class="panel-head"><div><h2>Requerimientos de materiales</h2><span>Según BOM + MPS + inventario</span></div></div><table><thead><tr><th>Material</th><th>Necesidad bruta</th><th>Disponible</th><th>Stock mínimo</th><th>Necesidad neta</th><th>Fecha</th></tr></thead><tbody><tr><td>MP-1042 · Acero laminado</td><td>2,400 kg</td><td>650 kg</td><td>500 kg</td><td><b>2,250 kg</b></td><td>20/08/2026</td></tr><tr><td>MP-2088 · Resina</td><td>1,200 kg</td><td>850 kg</td><td>300 kg</td><td><b>650 kg</b></td><td>22/08/2026</td></tr><tr><td>MP-3010 · Empaque</td><td>4,800 u.</td><td>2,900 u.</td><td>1,000 u.</td><td><b>2,900 u.</b></td><td>18/08/2026</td></tr></tbody></table></div></section>
+
+        <section class="section" id="inventarios"><div class="page-heading"><div><p class="eyebrow">CONTROL</p><h1>Inventarios</h1><p>Control de existencias, stock mínimo y stock de seguridad.</p></div><button class="secondary-btn" onclick="showToast('Inventario sincronizado')">⟳ Sincronizar</button></div><div class="grid-2"><div class="panel chart-panel"><div class="panel-head"><div><h2>Niveles de inventario</h2><span>Últimos 30 días</span></div></div><canvas id="stockChart"></canvas></div><div class="panel"><div class="panel-head"><div><h2>Indicadores</h2><span>Situación actual</span></div></div><div class="indicator-list"><div><span>Rotación de inventario</span><strong>7.4x</strong></div><div><span>Cobertura promedio</span><strong>18.2 días</strong></div><div><span>Stock de seguridad</span><strong>1,240 u.</strong></div><div><span>Quiebres de stock</span><strong class="danger-text">3</strong></div></div></div></div></section>
+
+        <section class="section" id="compras"><div class="page-heading"><div><p class="eyebrow">ABASTECIMIENTO</p><h1>Compras y proveedores</h1><p>Gestiona órdenes de compra y lead time de proveedores.</p></div><button class="primary-btn" onclick="showToast('Orden de compra creada')">+ Nueva compra</button></div><div class="panel table-panel"><div class="panel-head"><div><h2>Órdenes de compra</h2><span>Seguimiento de abastecimiento</span></div></div><table><thead><tr><th>OC</th><th>Proveedor</th><th>Material</th><th>Cantidad</th><th>Lead time</th><th>Estado</th></tr></thead><tbody><tr><td>OC-00841</td><td>Metalúrgica Andina</td><td>Acero laminado</td><td>2,250 kg</td><td>5 días</td><td><span class="status blue">En tránsito</span></td></tr><tr><td>OC-00840</td><td>Química Perú</td><td>Resina</td><td>650 kg</td><td>7 días</td><td><span class="status yellow">Pendiente</span></td></tr><tr><td>OC-00839</td><td>Pack Solutions</td><td>Empaques</td><td>2,900 u.</td><td>3 días</td><td><span class="status green">Recibida</span></td></tr></tbody></table></div></section>
+
+        <section class="section" id="produccion"><div class="page-heading"><div><p class="eyebrow">OPERACIONES</p><h1>Producción</h1><p>Ejecuta y monitorea el plan de producción.</p></div><button class="primary-btn" onclick="showToast('Nueva orden de producción creada')">+ Orden de producción</button></div><div class="kpi-grid"><div class="kpi-card"><div class="kpi-icon blue">▦</div><div><span>OP activas</span><strong>18</strong></div></div><div class="kpi-card"><div class="kpi-icon green">✓</div><div><span>Avance promedio</span><strong>78.5<em>%</em></strong></div></div><div class="kpi-card"><div class="kpi-icon orange">◷</div><div><span>Horas máquina</span><strong>1,284</strong></div></div><div class="kpi-card"><div class="kpi-icon purple">◉</div><div><span>Lotes producidos</span><strong>64</strong></div></div></div><div class="panel chart-panel"><div class="panel-head"><div><h2>Producción planificada vs. real</h2><span>Semana actual</span></div></div><canvas id="productionChart"></canvas></div></section>
+
+        <section class="section" id="lotes"><div class="page-heading"><div><p class="eyebrow">CALIDAD</p><h1>Lotes y trazabilidad</h1><p>Rastrea materias primas, producción y producto terminado.</p></div><button class="primary-btn" onclick="showToast('Lote registrado')">+ Registrar lote</button></div><div class="panel table-panel"><div class="panel-head"><div><h2>Trazabilidad de lotes</h2><span>Cadena completa de producción</span></div><input class="search" placeholder="Buscar lote..."></div><table><thead><tr><th>Lote</th><th>Producto</th><th>Materia prima</th><th>Producción</th><th>Vencimiento</th><th>Estado</th></tr></thead><tbody><tr><td>LT-260815</td><td>Producto A</td><td>MP-1042</td><td>15/08/2026</td><td>15/02/2027</td><td><span class="status green">Trazable</span></td></tr><tr><td>LT-260811</td><td>Producto B</td><td>MP-2088</td><td>11/08/2026</td><td>11/02/2027</td><td><span class="status yellow">Revisar</span></td></tr></tbody></table></div></section>
+
+        <section class="section" id="terminados"><div class="page-heading"><div><p class="eyebrow">SALIDA</p><h1>Producto terminado</h1><p>Controla existencias listas para despacho.</p></div><button class="primary-btn" onclick="showToast('Despacho generado')">+ Generar despacho</button></div><div class="grid-2"><div class="panel chart-panel"><div class="panel-head"><div><h2>Producto terminado</h2><span>Disponibilidad por producto</span></div></div><canvas id="finishedChart"></canvas></div><div class="panel"><div class="panel-head"><div><h2>Próximos despachos</h2><span>Hoy y mañana</span></div></div><div class="shipping"><div><b>#DSP-2204</b><span>Comercial Norte · 120 u.</span><strong>Hoy 16:30</strong></div><div><b>#DSP-2205</b><span>Distribuidora Sur · 85 u.</span><strong>Mañana 09:00</strong></div><div><b>#DSP-2206</b><span>Grupo Industrial · 240 u.</span><strong>Mañana 14:00</strong></div></div></div></div></section>
+
+        <section class="section" id="reportes"><div class="page-heading"><div><p class="eyebrow">ANÁLISIS</p><h1>Reportes e indicadores</h1><p>Genera evidencia para el seguimiento y la tesis.</p></div><button class="primary-btn" onclick="showToast('Reporte generado en PDF')">↓ Generar reporte</button></div><div class="report-grid"><div class="report-card"><span>▥</span><h3>Reporte de demanda</h3><p>Pedidos, tendencia y precisión del pronóstico.</p><button onclick="showToast('Descargando reporte...')">Ver reporte →</button></div><div class="report-card"><span>◫</span><h3>Reporte MPS / MRP</h3><p>Plan maestro y necesidades de materiales.</p><button onclick="showToast('Descargando reporte...')">Ver reporte →</button></div><div class="report-card"><span>▤</span><h3>Reporte de inventarios</h3><p>Stock mínimo, seguridad, rotación y quiebres.</p><button onclick="showToast('Descargando reporte...')">Ver reporte →</button></div><div class="report-card"><span>✓</span><h3>Reporte de producción</h3><p>Avance, lotes, cumplimiento y despacho.</p><button onclick="showToast('Descargando reporte...')">Ver reporte →</button></div></div></section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast">Operación realizada correctamente</div>
+  <script src="app.js"></script>
+</body>
+</html>
