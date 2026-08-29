@@ -38,7 +38,10 @@
 
       <nav class="ap-nav">
         <p class="ap-nav__title">PRINCIPAL</p>
-        <button class="ap-nav__item active" data-section="dashboard">
+        <button
+          class="ap-nav__item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+          data-section="dashboard"
+        >
           <span class="ap-nav__icon">⌂</span>
           <span>Dashboard</span>
         </button>
@@ -60,10 +63,13 @@
         </button>
 
         <p class="ap-nav__title">OPERACIONES</p>
-        <button class="ap-nav__item" data-section="inventarios">
+        <a
+          href="{{ route('admin.productos.index') }}"
+          class="ap-nav__item {{ request()->routeIs('admin.productos.*') ? 'active' : '' }}"
+        >
           <span class="ap-nav__icon">▤</span>
           <span>Inventarios</span>
-        </button>
+        </a>
         <button class="ap-nav__item" data-section="compras">
           <span class="ap-nav__icon">⇄</span>
           <span>Compras</span>
@@ -130,6 +136,18 @@
 
   {{-- Toast global --}}
   <div class="ap-toast" id="toast" role="status" aria-live="polite">Operación realizada</div>
+
+  {{-- Modal de confirmación reutilizable para acciones destructivas --}}
+    <div class="ap-modal-overlay" id="confirmModalOverlay">
+        <div class="ap-modal">
+            <h3>¿Confirmar acción?</h3>
+            <p id="confirmModalMessage">Esta acción no se puede deshacer.</p>
+            <div class="ap-modal-actions">
+                <button type="button" class="ap-btn ap-btn--secondary" id="confirmModalCancel">Cancelar</button>
+                <button type="button" class="ap-btn ap-btn--danger" id="confirmModalAccept">Eliminar</button>
+            </div>
+        </div>
+    </div>
 
   {{-- Script del panel --}}
   <script>
@@ -248,7 +266,39 @@
       }, { cutout: '68%', plugins: { legend: { position: 'bottom' } }, scales: { x: { display: false }, y: { display: false } } });
     }
 
-    document.addEventListener('DOMContentLoaded', initCharts);
+    document.addEventListener('DOMContentLoaded', () => {
+        const confirmForms  = document.querySelectorAll('form[data-confirm]');
+        const modalOverlay  = document.getElementById('confirmModalOverlay');
+        const modalMessage  = document.getElementById('confirmModalMessage');
+        const modalCancel   = document.getElementById('confirmModalCancel');
+        const modalAccept   = document.getElementById('confirmModalAccept');
+        let formPendingSubmit = null;
+
+        confirmForms.forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                formPendingSubmit = form;
+                modalMessage.textContent = form.dataset.confirm;
+                modalOverlay.classList.add('ap-modal-overlay--open');
+            });
+        });
+
+        modalCancel?.addEventListener('click', () => {
+            modalOverlay.classList.remove('ap-modal-overlay--open');
+            formPendingSubmit = null;
+        });
+
+        modalAccept?.addEventListener('click', () => {
+            if (formPendingSubmit) formPendingSubmit.submit();
+        });
+
+        modalOverlay?.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('ap-modal-overlay--open');
+                formPendingSubmit = null;
+            }
+        });
+    });
   </script>
 
   @stack('scripts')

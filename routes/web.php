@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\ProductoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,4 +29,5 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // Dashboard principal
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])
          ->name('dashboard');
+    Route::resource('/productos', ProductoController::class);
 });
