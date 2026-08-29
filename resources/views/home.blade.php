@@ -29,8 +29,7 @@
       y sigue cada lote de principio a fin.
     </p>
 
-    {{-- TODO: cambiar a route('login') cuando esa ruta con nombre exista tras el merge con la rama 'login' --}}
-    <a href="/login" class="cta">
+    <a href="{{ route('login') }}" class="cta">
       Iniciar sesión
       <span class="cta-arrow" aria-hidden="true">→</span>
     </a>
