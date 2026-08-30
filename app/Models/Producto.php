@@ -8,11 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Producto extends Model
 {
     protected $fillable = [
-        'codigo',
         'nombre',
         'categoria_id',
-        'tipo',
-        'sabor',
+        'tipo_id',
+        'sabor_id',
         'presentacion',
         'unidad_medida',
         'activo',
@@ -25,5 +24,15 @@ class Producto extends Model
     public function categoria(): BelongsTo
     {
         return $this->belongsTo(Categoria::class);
+    }
+
+    public function tipo(): BelongsTo
+    {
+        return $this->belongsTo(Tipo::class);
+    }
+
+    public function sabor(): BelongsTo
+    {
+        return $this->belongsTo(Sabor::class);
     }
 }

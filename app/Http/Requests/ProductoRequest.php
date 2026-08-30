@@ -2,32 +2,45 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Sabor;
+use App\Models\Tipo;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class ProductoRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // La autorización de acceso ya la maneja el middleware 'auth' en las rutas
+        return true;
     }
 
     public function rules(): array
     {
-        // route('producto') existe solo en las rutas edit/update; será null al crear
-        $productoId = $this->route('producto')?->id;
-
         return [
-            'codigo' => [
-                'required',
-                'string',
-                'max:20',
-                Rule::unique('productos', 'codigo')->ignore($productoId),
-            ],
             'nombre' => ['required', 'string', 'max:255'],
             'categoria_id' => ['required', 'exists:categorias,id'],
-            'tipo' => ['nullable', 'string', 'max:100'],
-            'sabor' => ['nullable', 'string', 'max:100'],
+            'tipo_id' => [
+                'required',
+                'exists:tipos,id',
+                function ($attribute, $value, $fail) {
+                    $tipo = Tipo::find($value);
+                    if ($tipo && (int) $tipo->categoria_id !== (int) $this->categoria_id) {
+                        $fail('El tipo seleccionado no pertenece a la categoría elegida.');
+                    }
+                },
+            ],
+            'sabor_id' => [
+                'nullable',
+                'exists:sabores,id',
+                function ($attribute, $value, $fail) {
+                    if (! $value) {
+                        return;
+                    }
+                    $sabor = Sabor::find($value);
+                    if ($sabor && (int) $sabor->categoria_id !== (int) $this->categoria_id) {
+                        $fail('El sabor seleccionado no pertenece a la categoría elegida.');
+                    }
+                },
+            ],
             'presentacion' => ['nullable', 'string', 'max:100'],
             'unidad_medida' => ['nullable', 'string', 'max:50'],
             'activo' => ['nullable', 'boolean'],
@@ -37,11 +50,9 @@ class ProductoRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'codigo.required' => 'El código es obligatorio.',
-            'codigo.unique' => 'Ya existe un producto con ese código.',
             'nombre.required' => 'El nombre es obligatorio.',
             'categoria_id.required' => 'Selecciona una categoría.',
-            'categoria_id.exists' => 'La categoría seleccionada no es válida.',
+            'tipo_id.required' => 'Selecciona un tipo.',
         ];
     }
 }

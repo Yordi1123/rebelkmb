@@ -970,3 +970,25 @@ td:first-child { font-weight: 700; color: #30394c; }
 .ap-btn--danger:hover {
   background: #b83a3a;
 }
+
+/* ===========================================
+   Enlaces "+ Nuevo..." junto a las etiquetas
+   de los selects en el formulario de Producto
+   =========================================== */
+
+.ap-form-group label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ap-form-link {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #6b4fbb;
+  text-decoration: none;
+}
+
+.ap-form-link:hover {
+  text-decoration: underline;
+}

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductoRequest;
 use App\Models\Categoria;
 use App\Models\Producto;
+use App\Models\Sabor;
+use App\Models\Tipo;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -13,10 +15,12 @@ class ProductoController extends Controller
 {
     public function index(): View
     {
-        $productos = Producto::with('categoria')
+        $productos = Producto::with(['categoria', 'tipo', 'sabor'])
             ->when(request('buscar'), function ($query, $buscar) {
                 $query->where('nombre', 'like', "%{$buscar}%")
-                    ->orWhere('codigo', 'like', "%{$buscar}%");
+                    ->orWhereHas('tipo', fn ($q) => $q->where('nombre', 'like', "%{$buscar}%")
+                        ->orWhere('codigo', 'like', "%{$buscar}%"))
+                    ->orWhereHas('sabor', fn ($q) => $q->where('nombre', 'like', "%{$buscar}%"));
             })
             ->when(request('categoria_id'), function ($query, $categoriaId) {
                 $query->where('categoria_id', $categoriaId);
@@ -33,8 +37,10 @@ class ProductoController extends Controller
     public function create(): View
     {
         $categorias = Categoria::orderBy('nombre')->get();
+        $tipos = Tipo::orderBy('nombre')->get();
+        $sabores = Sabor::orderBy('nombre')->get();
 
-        return view('admin.productos.create', compact('categorias'));
+        return view('admin.productos.create', compact('categorias', 'tipos', 'sabores'));
     }
 
     public function store(ProductoRequest $request): RedirectResponse
@@ -52,8 +58,10 @@ class ProductoController extends Controller
     public function edit(Producto $producto): View
     {
         $categorias = Categoria::orderBy('nombre')->get();
+        $tipos = Tipo::orderBy('nombre')->get();
+        $sabores = Sabor::orderBy('nombre')->get();
 
-        return view('admin.productos.edit', compact('producto', 'categorias'));
+        return view('admin.productos.edit', compact('producto', 'categorias', 'tipos', 'sabores'));
     }
 
     public function update(ProductoRequest $request, Producto $producto): RedirectResponse

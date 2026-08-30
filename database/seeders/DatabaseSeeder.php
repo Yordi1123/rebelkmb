@@ -12,11 +12,12 @@ class DatabaseSeeder extends Seeder
      * Los seeders se ejecutan en orden de dependencia FK:
      * primero los catálogos maestros, luego los usuarios.
      */
-    public function run(): void
-    {
+    public function run(): void     {
         $this->call([
             UsersSeeder::class,
             CategoriaSeeder::class,
+            TipoSeeder::class,
+            SaborSeeder::class,
             ProductoSeeder::class,
         ]);
     }

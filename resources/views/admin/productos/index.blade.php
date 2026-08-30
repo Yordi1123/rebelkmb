@@ -26,7 +26,7 @@
                 type="text"
                 name="buscar"
                 class="ap-search"
-                placeholder="Buscar por nombre o código..."
+                placeholder="Buscar por nombre, código o sabor..."
                 value="{{ request('buscar') }}"
             >
 
@@ -59,10 +59,10 @@
             <tbody>
                 @forelse ($productos as $producto)
                     <tr>
-                        <td>{{ $producto->codigo }}</td>
+                        <td>{{ $producto->tipo->codigo ?? '—' }}</td>
                         <td>{{ $producto->nombre }}</td>
                         <td>{{ $producto->categoria->nombre ?? '—' }}</td>
-                        <td>{{ $producto->sabor ?? '—' }}</td>
+                        <td>{{ $producto->sabor->nombre ?? '—' }}</td>
                         <td>{{ $producto->presentacion ?? '—' }}</td>
                         <td>
                             @if ($producto->activo)
