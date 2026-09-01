@@ -204,6 +204,36 @@
       setTimeout(() => t.classList.remove('show'), 2400);
     }
 
+    // ── Modales genéricos ────────────────────────────────────────────────────
+    function openModal(id) {
+      const overlay = document.getElementById(id);
+      if (!overlay) return;
+      overlay.classList.add('ap-modal-overlay--open');
+      // Foco en el primer input para accesibilidad
+      setTimeout(() => {
+        const firstInput = overlay.querySelector('input:not([type=hidden]), select, textarea');
+        if (firstInput) firstInput.focus();
+      }, 80);
+    }
+    function closeModal(id) {
+      const overlay = document.getElementById(id);
+      if (overlay) overlay.classList.remove('ap-modal-overlay--open');
+    }
+    // Cerrar cualquier modal al hacer clic fuera del contenido
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('ap-modal-overlay')) {
+        e.target.classList.remove('ap-modal-overlay--open');
+      }
+    });
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.ap-modal-overlay--open').forEach(el => {
+          el.classList.remove('ap-modal-overlay--open');
+        });
+      }
+    });
+
     // Charts — idénticos a la plantilla original
     let charts = {};
     const chartDefaults = {

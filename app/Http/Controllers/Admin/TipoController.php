@@ -14,9 +14,10 @@ class TipoController extends Controller
 {
     public function index(): View
     {
-        $tipos = Tipo::with('categoria')->orderBy('nombre')->get();
+        $tipos      = Tipo::with('categoria')->orderBy('nombre')->get();
+        $categorias = Categoria::orderBy('nombre')->get();
 
-        return view('admin.tipos.index', compact('tipos'));
+        return view('admin.tipos.index', compact('tipos', 'categorias'));
     }
 
     public function create(): View

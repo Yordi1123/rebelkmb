@@ -14,9 +14,10 @@ class SaborController extends Controller
 {
     public function index(): View
     {
-        $sabores = Sabor::with('categoria')->orderBy('nombre')->get();
+        $sabores    = Sabor::with('categoria')->orderBy('nombre')->get();
+        $categorias = Categoria::orderBy('nombre')->get();
 
-        return view('admin.sabores.index', compact('sabores'));
+        return view('admin.sabores.index', compact('sabores', 'categorias'));
     }
 
     public function create(): View

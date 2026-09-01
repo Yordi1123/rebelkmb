@@ -21,7 +21,7 @@
         <div class="ap-form-group">
             <label for="categoria_id">
                 Categoría
-                <a href="{{ route('admin.categorias.create') }}" target="_blank" class="ap-form-link">+ Nueva categoría</a>
+                <button type="button" class="ap-form-link" onclick="openModal('modal-prod-cat-crear')">+ Nueva categoría</button>
             </label>
             <select id="categoria_id" name="categoria_id" class="ap-input @error('categoria_id') ap-input--error @enderror">
                 <option value="">Selecciona una categoría</option>
@@ -42,7 +42,7 @@
         <div class="ap-form-group">
             <label for="tipo_id">
                 Código / Tipo
-                <a href="{{ route('admin.tipos.create') }}" target="_blank" class="ap-form-link">+ Nuevo tipo</a>
+                <button type="button" class="ap-form-link" onclick="openModal('modal-prod-tipo-crear')">+ Nuevo tipo</button>
             </label>
             <select id="tipo_id" name="tipo_id" class="ap-input @error('tipo_id') ap-input--error @enderror">
                 <option value="">Selecciona una categoría primero</option>
@@ -64,7 +64,7 @@
         <div class="ap-form-group">
             <label for="sabor_id">
                 Sabor
-                <a href="{{ route('admin.sabores.create') }}" target="_blank" class="ap-form-link">+ Nuevo sabor</a>
+                <button type="button" class="ap-form-link" onclick="openModal('modal-prod-sabor-crear')">+ Nuevo sabor</button>
             </label>
             <select id="sabor_id" name="sabor_id" class="ap-input @error('sabor_id') ap-input--error @enderror">
                 <option value="">Sin sabor (ej: Natural, Griego)</option>
@@ -192,3 +192,92 @@
         if (saborSeleccionado) saborSeleccionado.hidden = false;
     })();
 </script>
+
+{{-- ── MODAL: NUEVA CATEGORÍA (desde formulario de producto) ─── --}}
+<div class="ap-modal-overlay" id="modal-prod-cat-crear">
+    <div class="ap-modal">
+        <h3>Nueva categoría</h3>
+        <form method="POST" action="{{ route('admin.categorias.store') }}">
+            @csrf
+            <input type="hidden" name="_redirect_back" value="1">
+            <div class="ap-form-grid" style="margin-top:16px;">
+                <div class="ap-form-group">
+                    <label for="pc-nombre">Nombre</label>
+                    <input type="text" id="pc-nombre" name="nombre" class="ap-input" placeholder="Ej: Yogures" autocomplete="off">
+                </div>
+                <div class="ap-form-group" style="grid-column:1/-1;">
+                    <label for="pc-desc">Descripción (opcional)</label>
+                    <input type="text" id="pc-desc" name="descripcion" class="ap-input" autocomplete="off">
+                </div>
+            </div>
+            <div class="ap-modal-actions">
+                <button type="button" class="ap-btn ap-btn--secondary" onclick="closeModal('modal-prod-cat-crear')">Cancelar</button>
+                <button type="submit" class="ap-btn ap-btn--primary">Crear categoría</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- ── MODAL: NUEVO TIPO (desde formulario de producto) ─────── --}}
+<div class="ap-modal-overlay" id="modal-prod-tipo-crear">
+    <div class="ap-modal">
+        <h3>Nuevo tipo</h3>
+        <form method="POST" action="{{ route('admin.tipos.store') }}">
+            @csrf
+            <input type="hidden" name="_redirect_back" value="1">
+            <div class="ap-form-grid" style="margin-top:16px;">
+                <div class="ap-form-group">
+                    <label for="pt-codigo">Código</label>
+                    <input type="text" id="pt-codigo" name="codigo" class="ap-input" placeholder="Ej: YN" style="text-transform:uppercase;" autocomplete="off">
+                </div>
+                <div class="ap-form-group">
+                    <label for="pt-nombre">Nombre</label>
+                    <input type="text" id="pt-nombre" name="nombre" class="ap-input" placeholder="Ej: Yogurt Natural" autocomplete="off">
+                </div>
+                <div class="ap-form-group" style="grid-column:1/-1;">
+                    <label for="pt-categoria">Categoría</label>
+                    <select id="pt-categoria" name="categoria_id" class="ap-input">
+                        <option value="">Selecciona una categoría</option>
+                        @foreach ($categorias as $categoria)
+                            <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="ap-modal-actions">
+                <button type="button" class="ap-btn ap-btn--secondary" onclick="closeModal('modal-prod-tipo-crear')">Cancelar</button>
+                <button type="submit" class="ap-btn ap-btn--primary">Crear tipo</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- ── MODAL: NUEVO SABOR (desde formulario de producto) ─────── --}}
+<div class="ap-modal-overlay" id="modal-prod-sabor-crear">
+    <div class="ap-modal">
+        <h3>Nuevo sabor</h3>
+        <form method="POST" action="{{ route('admin.sabores.store') }}">
+            @csrf
+            <input type="hidden" name="_redirect_back" value="1">
+            <div class="ap-form-grid" style="margin-top:16px;">
+                <div class="ap-form-group">
+                    <label for="ps-nombre">Nombre</label>
+                    <input type="text" id="ps-nombre" name="nombre" class="ap-input" placeholder="Ej: Fresa" autocomplete="off">
+                </div>
+                <div class="ap-form-group" style="grid-column:1/-1;">
+                    <label for="ps-categoria">Categoría</label>
+                    <select id="ps-categoria" name="categoria_id" class="ap-input">
+                        <option value="">Selecciona una categoría</option>
+                        @foreach ($categorias as $categoria)
+                            <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="ap-modal-actions">
+                <button type="button" class="ap-btn ap-btn--secondary" onclick="closeModal('modal-prod-sabor-crear')">Cancelar</button>
+                <button type="submit" class="ap-btn ap-btn--primary">Crear sabor</button>
+            </div>
+        </form>
+    </div>
+</div>

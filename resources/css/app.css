@@ -931,9 +931,11 @@ td:first-child { font-weight: 700; color: #30394c; }
 .ap-modal {
   background: #ffffff;
   border-radius: 10px;
-  padding: 24px;
-  max-width: 380px;
-  width: 90%;
+  padding: 28px;
+  max-width: 520px;
+  width: 92%;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
   transform: scale(0.96);
   transition: transform 0.15s ease;
@@ -960,6 +962,7 @@ td:first-child { font-weight: 700; color: #30394c; }
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  margin-top: 20px;
 }
 
 .ap-btn--danger {
