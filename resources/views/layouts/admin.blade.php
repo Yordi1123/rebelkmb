@@ -182,15 +182,27 @@
     };
 
     navItems.forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
         const id = btn.dataset.section;
-        navItems.forEach(x => x.classList.remove('active'));
-        btn.classList.add('active');
-        sections.forEach(s => s.classList.toggle('ap-section--active', s.id === id));
-        if (breadcrumb) breadcrumb.textContent = sectionNames[id] || id;
-        sidebar.classList.remove('open');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        setTimeout(initCharts, 30);
+        if (!id) return; // Es un enlace normal con href
+        
+        // Prevenir comportamiento default por si acaso
+        e.preventDefault();
+
+        // Si estamos en el dashboard (existen las secciones)
+        if (document.getElementById(id)) {
+            navItems.forEach(x => x.classList.remove('active'));
+            btn.classList.add('active');
+            sections.forEach(s => s.classList.toggle('ap-section--active', s.id === id));
+            if (breadcrumb) breadcrumb.textContent = sectionNames[id] || id;
+            sidebar.classList.remove('open');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(initCharts, 30);
+            history.replaceState(null, null, '{{ route('admin.dashboard') }}#' + id);
+        } else {
+            // Estamos en otra página, redirigir al dashboard con hash
+            window.location.href = '{{ route('admin.dashboard') }}#' + id;
+        }
       });
     });
 
@@ -299,6 +311,16 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        // Abrir sección correcta si hay un hash en la URL al cargar
+        if (window.location.hash) {
+            const id = window.location.hash.substring(1);
+            const targetBtn = document.querySelector(`.ap-nav__item[data-section="${id}"]`);
+            if (targetBtn && document.getElementById(id)) {
+                // Ejecutamos el clic para activar la sección
+                targetBtn.click();
+            }
+        }
+
         const confirmForms  = document.querySelectorAll('form[data-confirm]');
         const modalOverlay  = document.getElementById('confirmModalOverlay');
         const modalMessage  = document.getElementById('confirmModalMessage');
