@@ -120,14 +120,14 @@
 
 
         <div class="ap-form-group ap-form-group--checkbox">
-            <label>
+            <label style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; cursor: pointer;">
                 <input
                     type="checkbox"
                     name="activo"
                     value="1"
                     @checked(old('activo', $producto->activo ?? true))
                 >
-                Producto activo
+                <span style="font-weight: 500;">Producto activo</span>
             </label>
         </div>
 

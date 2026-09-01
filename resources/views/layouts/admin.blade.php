@@ -68,7 +68,7 @@
           class="ap-nav__item {{ request()->routeIs('admin.productos.*') ? 'active' : '' }}"
         >
           <span class="ap-nav__icon">▤</span>
-          <span>Inventarios</span>
+          <span>Catálogo de Productos</span>
         </a>
         <button class="ap-nav__item" data-section="compras">
           <span class="ap-nav__icon">⇄</span>

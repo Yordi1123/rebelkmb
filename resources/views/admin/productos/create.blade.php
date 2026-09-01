@@ -6,7 +6,7 @@
 @section('content')
     <div class="ap-page-heading">
         <div>
-            <p class="ap-eyebrow">Inventario</p>
+            <p class="ap-eyebrow">Catálogo</p>
             <h1>Nuevo producto</h1>
         </div>
     </div>
