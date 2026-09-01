@@ -18,6 +18,28 @@
             @enderror
         </div>
 
+        <div class="ap-form-group">
+            <label for="unidad_medida">Unidad de medida base</label>
+            <select
+                id="unidad_medida"
+                name="unidad_medida"
+                class="ap-input @error('unidad_medida') ap-input--error @enderror"
+            >
+                <option value="">Selecciona una unidad</option>
+                @foreach (\App\Models\Categoria::UNIDADES_MEDIDA as $unidad)
+                    <option
+                        value="{{ $unidad }}"
+                        @selected(old('unidad_medida', $categoria->unidad_medida ?? '') === $unidad)
+                    >
+                        {{ $unidad }}
+                    </option>
+                @endforeach
+            </select>
+            @error('unidad_medida')
+                <span class="ap-form-error">{{ $message }}</span>
+            @enderror
+        </div>
+
         <div class="ap-form-group" style="grid-column: 1 / -1;">
             <label for="descripcion">Descripción (opcional)</label>
             <input

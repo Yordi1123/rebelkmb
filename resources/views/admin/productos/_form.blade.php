@@ -1,7 +1,13 @@
-@csrf
+@if(isset($producto))
+    <form method="POST" action="{{ route('admin.productos.update', $producto) }}">
+        @method('PUT')
+@else
+    <form method="POST" action="{{ route('admin.productos.store') }}">
+@endif
+    @csrf
 
-<div class="ap-panel">
-    <div class="ap-form-grid">
+    <div class="ap-panel">
+        <div class="ap-form-grid">
 
         <div class="ap-form-group">
             <label for="nombre">Nombre</label>
@@ -127,13 +133,14 @@
 
     </div>
 
-    <div class="ap-form-actions">
-        <a href="{{ route('admin.productos.index') }}" class="ap-btn ap-btn--secondary">Cancelar</a>
-        <button type="submit" class="ap-btn ap-btn--primary">
-            {{ isset($producto) ? 'Guardar cambios' : 'Crear producto' }}
-        </button>
+        <div class="ap-form-actions">
+            <a href="{{ route('admin.productos.index') }}" class="ap-btn ap-btn--secondary">Cancelar</a>
+            <button type="submit" class="ap-btn ap-btn--primary">
+                {{ isset($producto) ? 'Guardar cambios' : 'Crear producto' }}
+            </button>
+        </div>
     </div>
-</div>
+</form>
 
 <script>
     // Filtra las opciones de Tipo y Sabor según la Categoría seleccionada.

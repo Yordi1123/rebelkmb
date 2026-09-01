@@ -11,7 +11,5 @@
         </div>
     </div>
 
-    <form method="POST" action="{{ route('admin.productos.store') }}">
-        @include('admin.productos._form')
-    </form>
+    @include('admin.productos._form')
 @endsection
