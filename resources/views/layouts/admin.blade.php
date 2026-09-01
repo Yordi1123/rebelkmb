@@ -12,6 +12,8 @@
 
   {{-- Chart.js desde CDN (requerido por la plantilla) --}}
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+
 
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 
