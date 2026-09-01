@@ -28,13 +28,23 @@ class CategoriaController extends Controller
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:255', 'unique:categorias,nombre'],
             'descripcion' => ['nullable', 'string', 'max:500'],
+            'unidad_medida' => ['required', 'string', Rule::in(Categoria::UNIDADES_MEDIDA)],
         ]);
 
         Categoria::create($data);
 
+        $mensaje = 'Categoría creada correctamente.';
+
+        // Si la petición vino desde un modal dentro de otro formulario
+        // (ej: formulario de producto), regresar a esa página en lugar
+        // de redirigir al index de categorías.
+        if ($request->boolean('_redirect_back')) {
+            return back()->with('success', $mensaje);
+        }
+
         return redirect()
             ->route('admin.categorias.index')
-            ->with('success', 'Categoría creada correctamente.');
+            ->with('success', $mensaje);
     }
 
     public function edit(Categoria $categoria): View
@@ -47,6 +57,7 @@ class CategoriaController extends Controller
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:255', Rule::unique('categorias', 'nombre')->ignore($categoria->id)],
             'descripcion' => ['nullable', 'string', 'max:500'],
+            'unidad_medida' => ['required', 'string', Rule::in(Categoria::UNIDADES_MEDIDA)],
         ]);
 
         $categoria->update($data);

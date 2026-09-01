@@ -96,33 +96,22 @@
 
         <div class="ap-form-group">
             <label for="presentacion">Presentación</label>
-            <input
-                type="text"
+            <select
                 id="presentacion"
                 name="presentacion"
                 class="ap-input @error('presentacion') ap-input--error @enderror"
-                value="{{ old('presentacion', $producto->presentacion ?? '') }}"
-                placeholder="Ej: 1L, 150ml, 330ml"
             >
+                <option value="">Selecciona una categoría primero</option>
+                {{-- Opciones pobladas vía JS --}}
+                @if(isset($producto) && $producto->presentacion)
+                    <option value="{{ $producto->presentacion }}" selected>{{ $producto->presentacion }}</option>
+                @endif
+            </select>
             @error('presentacion')
                 <span class="ap-form-error">{{ $message }}</span>
             @enderror
         </div>
 
-        <div class="ap-form-group">
-            <label for="unidad_medida">Unidad de medida</label>
-            <input
-                type="text"
-                id="unidad_medida"
-                name="unidad_medida"
-                class="ap-input @error('unidad_medida') ap-input--error @enderror"
-                value="{{ old('unidad_medida', $producto->unidad_medida ?? '') }}"
-                placeholder="Ej: litros, mililitros"
-            >
-            @error('unidad_medida')
-                <span class="ap-form-error">{{ $message }}</span>
-            @enderror
-        </div>
 
         <div class="ap-form-group ap-form-group--checkbox">
             <label>
@@ -157,6 +146,12 @@
         const saborEstado     = document.getElementById('sabor-estado');
         const saborHint       = document.getElementById('sabor-hint');
 
+        const presentacionesPorCategoria = @json($presentacionesPorCategoria ?? []);
+        const presentacionSelect = document.getElementById('presentacion');
+
+        // Para mantener el valor seleccionado al recargar (ej: si hay error de validación)
+        const oldPresentacion = "{{ old('presentacion', $producto->presentacion ?? '') }}";
+
         function filtrarPorCategoria(select, categoriaId, placeholderTexto) {
             const opciones = select.querySelectorAll('option[data-categoria]');
             let hayAlgunaVisible = false;
@@ -182,6 +177,35 @@
             }
 
             select.disabled = !categoriaId;
+        }
+
+        // ── Lógica de presentaciones dinámicas ────────────────────────────────
+        function actualizarPresentaciones() {
+            const categoriaId = categoriaSelect.value;
+            
+            // Limpiar opciones actuales
+            presentacionSelect.innerHTML = '';
+            
+            if (!categoriaId || !presentacionesPorCategoria[categoriaId]) {
+                presentacionSelect.innerHTML = '<option value="">Selecciona una categoría primero</option>';
+                presentacionSelect.disabled = true;
+                return;
+            }
+
+            const presentaciones = presentacionesPorCategoria[categoriaId];
+            presentacionSelect.innerHTML = '<option value="">Selecciona una presentación</option>';
+            
+            presentaciones.forEach(pres => {
+                const option = document.createElement('option');
+                option.value = pres;
+                option.textContent = pres;
+                if (pres === oldPresentacion) {
+                    option.selected = true;
+                }
+                presentacionSelect.appendChild(option);
+            });
+
+            presentacionSelect.disabled = false;
         }
 
         // ── Lógica de requiere_sabor ─────────────────────────────────────────
@@ -222,6 +246,7 @@
             filtrarPorCategoria(tipoSelect, categoriaId);
             filtrarPorCategoria(saborSelect, categoriaId);
             actualizarEstadoSabor();
+            actualizarPresentaciones();
         }
 
         categoriaSelect.addEventListener('change', actualizarFiltros);
@@ -255,6 +280,14 @@
                 <div class="ap-form-group">
                     <label for="pc-nombre">Nombre</label>
                     <input type="text" id="pc-nombre" name="nombre" class="ap-input" placeholder="Ej: Yogures" autocomplete="off">
+                </div>
+                <div class="ap-form-group">
+                    <label for="pc-unidad">Unidad de medida base</label>
+                    <select id="pc-unidad" name="unidad_medida" class="ap-input">
+                        @foreach (\App\Models\Categoria::UNIDADES_MEDIDA as $unidad)
+                            <option value="{{ $unidad }}">{{ $unidad }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="ap-form-group" style="grid-column:1/-1;">
                     <label for="pc-desc">Descripción (opcional)</label>

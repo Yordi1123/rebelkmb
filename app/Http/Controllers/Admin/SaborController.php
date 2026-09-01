@@ -48,9 +48,15 @@ class SaborController extends Controller
 
         Sabor::create($data);
 
+        $mensaje = 'Sabor creado correctamente.';
+
+        if ($request->boolean('_redirect_back')) {
+            return back()->with('success', $mensaje);
+        }
+
         return redirect()
             ->route('admin.sabores.index')
-            ->with('success', 'Sabor creado correctamente.');
+            ->with('success', $mensaje);
     }
 
     public function edit(Sabor $sabor): View

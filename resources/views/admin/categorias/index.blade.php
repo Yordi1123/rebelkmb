@@ -32,6 +32,7 @@
                 <tr>
                     <th>Nombre</th>
                     <th>Descripción</th>
+                    <th>Unidad de medida</th>
                     <th></th>
                 </tr>
             </thead>
@@ -40,6 +41,7 @@
                     <tr>
                         <td>{{ $categoria->nombre }}</td>
                         <td>{{ $categoria->descripcion ?? '—' }}</td>
+                        <td>{{ $categoria->unidad_medida }}</td>
                         <td style="white-space: nowrap;">
                             <button
                                 type="button"
@@ -48,6 +50,7 @@
                                 data-id="{{ $categoria->id }}"
                                 data-nombre="{{ $categoria->nombre }}"
                                 data-descripcion="{{ $categoria->descripcion ?? '' }}"
+                                data-unidad="{{ $categoria->unidad_medida }}"
                                 data-url="{{ route('admin.categorias.update', $categoria) }}"
                             >
                                 Editar
@@ -97,6 +100,20 @@
                             <span class="ap-form-error">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="ap-form-group">
+                        <label for="crear-unidad">Unidad de medida base</label>
+                        <select id="crear-unidad" name="unidad_medida" class="ap-input @error('unidad_medida') ap-input--error @enderror">
+                            <option value="">Selecciona una unidad</option>
+                            @foreach (\App\Models\Categoria::UNIDADES_MEDIDA as $unidad)
+                                <option value="{{ $unidad }}" @selected(old('unidad_medida') === $unidad)>
+                                    {{ $unidad }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('unidad_medida')
+                            <span class="ap-form-error">{{ $message }}</span>
+                        @enderror
+                    </div>
                     <div class="ap-form-group" style="grid-column: 1 / -1;">
                         <label for="crear-descripcion">Descripción (opcional)</label>
                         <input
@@ -138,6 +155,16 @@
                             autocomplete="off"
                         >
                     </div>
+                    <div class="ap-form-group">
+                        <label for="editar-unidad">Unidad de medida base</label>
+                        <select id="editar-unidad" name="unidad_medida" class="ap-input">
+                            @foreach (\App\Models\Categoria::UNIDADES_MEDIDA as $unidad)
+                                <option value="{{ $unidad }}">
+                                    {{ $unidad }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="ap-form-group" style="grid-column: 1 / -1;">
                         <label for="editar-descripcion">Descripción (opcional)</label>
                         <input
@@ -165,6 +192,7 @@
         btn.addEventListener('click', () => {
             document.getElementById('editar-nombre').value       = btn.dataset.nombre;
             document.getElementById('editar-descripcion').value  = btn.dataset.descripcion;
+            document.getElementById('editar-unidad').value       = btn.dataset.unidad;
             document.getElementById('form-editar-categoria').action = btn.dataset.url;
             openModal('modal-categoria-editar');
         });

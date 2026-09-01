@@ -28,7 +28,6 @@ class ProductoSeeder extends Seeder
                 'categoria_id' => $yogures->id,
                 'sabor_id' => null,
                 'presentacion' => '1L',
-                'unidad_medida' => 'litros',
                 'activo' => true,
             ]
         );
@@ -40,7 +39,6 @@ class ProductoSeeder extends Seeder
                 'categoria_id' => $yogures->id,
                 'sabor_id' => null,
                 'presentacion' => '1L',
-                'unidad_medida' => 'litros',
                 'activo' => true,
             ]
         );
@@ -57,7 +55,6 @@ class ProductoSeeder extends Seeder
                     'nombre' => "Yogurt Frutado {$nombreSabor}",
                     'categoria_id' => $yogures->id,
                     'presentacion' => '1L',
-                    'unidad_medida' => 'litros',
                     'activo' => true,
                 ]
             );
@@ -75,7 +72,6 @@ class ProductoSeeder extends Seeder
                     'nombre' => "Yogurt Griego Frutado {$nombreSabor}",
                     'categoria_id' => $yogures->id,
                     'presentacion' => '150ml',
-                    'unidad_medida' => 'mililitros',
                     'activo' => true,
                 ]
             );
@@ -93,7 +89,6 @@ class ProductoSeeder extends Seeder
                     'nombre' => "Kombucha {$nombreSabor}",
                     'categoria_id' => $kombuchas->id,
                     'presentacion' => '330ml',
-                    'unidad_medida' => 'mililitros',
                     'activo' => true,
                 ]
             );

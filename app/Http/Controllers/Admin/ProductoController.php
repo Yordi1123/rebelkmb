@@ -40,7 +40,11 @@ class ProductoController extends Controller
         $tipos = Tipo::orderBy('nombre')->get();
         $sabores = Sabor::orderBy('nombre')->get();
 
-        return view('admin.productos.create', compact('categorias', 'tipos', 'sabores'));
+        $presentacionesPorCategoria = $categorias->mapWithKeys(function ($categoria) {
+            return [$categoria->id => $categoria->presentaciones];
+        });
+
+        return view('admin.productos.create', compact('categorias', 'tipos', 'sabores', 'presentacionesPorCategoria'));
     }
 
     public function store(ProductoRequest $request): RedirectResponse
@@ -61,7 +65,11 @@ class ProductoController extends Controller
         $tipos = Tipo::orderBy('nombre')->get();
         $sabores = Sabor::orderBy('nombre')->get();
 
-        return view('admin.productos.edit', compact('producto', 'categorias', 'tipos', 'sabores'));
+        $presentacionesPorCategoria = $categorias->mapWithKeys(function ($categoria) {
+            return [$categoria->id => $categoria->presentaciones];
+        });
+
+        return view('admin.productos.edit', compact('producto', 'categorias', 'tipos', 'sabores', 'presentacionesPorCategoria'));
     }
 
     public function update(ProductoRequest $request, Producto $producto): RedirectResponse

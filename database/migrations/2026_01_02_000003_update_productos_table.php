@@ -8,6 +8,13 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Paso 1: eliminar el índice único de 'codigo' antes de soltar la columna.
+        // SQLite no permite dropColumn sobre columnas con índices en la misma llamada.
+        Schema::table('productos', function (Blueprint $table) {
+            $table->dropUnique('productos_codigo_unique');
+        });
+
+        // Paso 2: eliminar columnas antiguas y agregar las FK nuevas.
         Schema::table('productos', function (Blueprint $table) {
             $table->dropColumn(['codigo', 'tipo', 'sabor']);
 
