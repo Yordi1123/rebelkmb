@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
 use App\Models\Sabor;
+use App\Http\Requests\SaborRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Validation\Rule;
 
 class SaborController extends Controller
 {
@@ -27,24 +27,9 @@ class SaborController extends Controller
         return view('admin.sabores.create', compact('categorias'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(SaborRequest $request): RedirectResponse
     {
-        $data = $request->validate([
-            'nombre' => ['required', 'string', 'max:255'],
-            'categoria_id' => ['required', 'exists:categorias,id'],
-        ]);
-
-        // Un mismo sabor puede repetirse en distintas categorías (ej: "Fresa" en
-        // Yogures y en Kombuchas), pero no dos veces dentro de la misma categoría.
-        $existe = Sabor::where('nombre', $data['nombre'])
-            ->where('categoria_id', $data['categoria_id'])
-            ->exists();
-
-        if ($existe) {
-            return back()
-                ->withInput()
-                ->withErrors(['nombre' => 'Ese sabor ya existe en esta categoría.']);
-        }
+        $data = $request->validated();
 
         Sabor::create($data);
 
@@ -66,23 +51,9 @@ class SaborController extends Controller
         return view('admin.sabores.edit', compact('sabor', 'categorias'));
     }
 
-    public function update(Request $request, Sabor $sabor): RedirectResponse
+    public function update(SaborRequest $request, Sabor $sabor): RedirectResponse
     {
-        $data = $request->validate([
-            'nombre' => ['required', 'string', 'max:255'],
-            'categoria_id' => ['required', 'exists:categorias,id'],
-        ]);
-
-        $existe = Sabor::where('nombre', $data['nombre'])
-            ->where('categoria_id', $data['categoria_id'])
-            ->where('id', '!=', $sabor->id)
-            ->exists();
-
-        if ($existe) {
-            return back()
-                ->withInput()
-                ->withErrors(['nombre' => 'Ese sabor ya existe en esta categoría.']);
-        }
+        $data = $request->validated();
 
         $sabor->update($data);
 

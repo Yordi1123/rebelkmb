@@ -372,3 +372,13 @@
                         @foreach ($categorias as $categoria)
                             <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
                         @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="ap-modal-actions">
+                <button type="button" class="ap-btn ap-btn--secondary" onclick="closeModal('modal-prod-sabor-crear')">Cancelar</button>
+                <button type="submit" class="ap-btn ap-btn--primary">Crear sabor</button>
+            </div>
+        </form>
+    </div>
+</div>
