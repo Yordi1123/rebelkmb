@@ -50,6 +50,7 @@
                     <option
                         value="{{ $tipo->id }}"
                         data-categoria="{{ $tipo->categoria_id }}"
+                        data-requiere-sabor="{{ $tipo->requiere_sabor ? '1' : '0' }}"
                         @selected(old('tipo_id', $producto->tipo_id ?? '') == $tipo->id)
                     >
                         {{ $tipo->codigo }} — {{ $tipo->nombre }}
@@ -61,11 +62,20 @@
             @enderror
         </div>
 
-        <div class="ap-form-group">
-            <label for="sabor_id">
+        <div class="ap-form-group" id="sabor-group">
+            <label for="sabor_id" id="sabor-label">
                 Sabor
                 <button type="button" class="ap-form-link" onclick="openModal('modal-prod-sabor-crear')">+ Nuevo sabor</button>
             </label>
+            {{-- Badge de estado: se actualiza con JS --}}
+            <span id="sabor-estado" style="
+                display: none;
+                font-size: 0.75rem;
+                font-weight: 600;
+                padding: 2px 10px;
+                border-radius: 20px;
+                margin-left: 6px;
+            "></span>
             <select id="sabor_id" name="sabor_id" class="ap-input @error('sabor_id') ap-input--error @enderror">
                 <option value="">Sin sabor (ej: Natural, Griego)</option>
                 @foreach ($sabores as $sabor)
@@ -81,6 +91,7 @@
             @error('sabor_id')
                 <span class="ap-form-error">{{ $message }}</span>
             @enderror
+            <small id="sabor-hint" style="color: #6b6355; font-size: 0.78rem;"></small>
         </div>
 
         <div class="ap-form-group">
@@ -141,8 +152,10 @@
     // porque los catálogos de tipos/sabores son cortos.
     (function () {
         const categoriaSelect = document.getElementById('categoria_id');
-        const tipoSelect = document.getElementById('tipo_id');
-        const saborSelect = document.getElementById('sabor_id');
+        const tipoSelect      = document.getElementById('tipo_id');
+        const saborSelect     = document.getElementById('sabor_id');
+        const saborEstado     = document.getElementById('sabor-estado');
+        const saborHint       = document.getElementById('sabor-hint');
 
         function filtrarPorCategoria(select, categoriaId, placeholderTexto) {
             const opciones = select.querySelectorAll('option[data-categoria]');
@@ -171,13 +184,48 @@
             select.disabled = !categoriaId;
         }
 
+        // ── Lógica de requiere_sabor ─────────────────────────────────────────
+        // Bloquea o habilita el campo Sabor según el tipo seleccionado.
+        function actualizarEstadoSabor() {
+            const tipoOpt = tipoSelect.options[tipoSelect.selectedIndex];
+            const requiere = tipoOpt && tipoOpt.dataset.requiereSabor === '1';
+
+            if (!tipoSelect.value) {
+                // Sin tipo seleccionado: sabor deshabilitado, sin indicador
+                saborSelect.disabled = true;
+                saborSelect.value    = '';
+                saborEstado.style.display = 'none';
+                saborHint.textContent = '';
+                return;
+            }
+
+            if (requiere) {
+                saborSelect.disabled = false;
+                saborEstado.textContent = '* Requerido';
+                saborEstado.style.display     = 'inline-block';
+                saborEstado.style.background  = 'rgba(98,87,223,0.10)';
+                saborEstado.style.color       = '#6257df';
+                saborHint.textContent = 'Este tipo requiere que selecciones un sabor.';
+            } else {
+                saborSelect.disabled = true;
+                saborSelect.value    = '';
+                saborEstado.textContent = 'No aplica';
+                saborEstado.style.display     = 'inline-block';
+                saborEstado.style.background  = 'rgba(107,99,85,0.10)';
+                saborEstado.style.color       = '#6b6355';
+                saborHint.textContent = 'Este tipo no requiere sabor (ej: Natural, Griego).';
+            }
+        }
+
         function actualizarFiltros() {
             const categoriaId = categoriaSelect.value;
             filtrarPorCategoria(tipoSelect, categoriaId);
             filtrarPorCategoria(saborSelect, categoriaId);
+            actualizarEstadoSabor();
         }
 
         categoriaSelect.addEventListener('change', actualizarFiltros);
+        tipoSelect.addEventListener('change', actualizarEstadoSabor);
 
         // Al cargar la página (ej: modo edición con datos ya guardados),
         // aplica el filtro inmediatamente para que se vea consistente.
@@ -190,6 +238,9 @@
 
         const saborSeleccionado = saborSelect.querySelector('option[selected]');
         if (saborSeleccionado) saborSeleccionado.hidden = false;
+
+        // Aplicar estado del sabor después de restaurar las opciones seleccionadas
+        actualizarEstadoSabor();
     })();
 </script>
 
@@ -243,6 +294,15 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="ap-form-group ap-form-group--checkbox" style="grid-column:1/-1;">
+                    <label>
+                        <input type="checkbox" name="requiere_sabor" value="1">
+                        Los productos de este tipo requieren un sabor
+                        <small style="display:block; color:#6b6355; font-size:0.78rem; margin-top:2px; font-weight:400;">
+                            Ej: Yogurt Frutado ✓ — Yogurt Natural ✗
+                        </small>
+                    </label>
+                </div>
             </div>
             <div class="ap-modal-actions">
                 <button type="button" class="ap-btn ap-btn--secondary" onclick="closeModal('modal-prod-tipo-crear')">Cancelar</button>
@@ -251,6 +311,7 @@
         </form>
     </div>
 </div>
+
 
 {{-- ── MODAL: NUEVO SABOR (desde formulario de producto) ─────── --}}
 <div class="ap-modal-overlay" id="modal-prod-sabor-crear">
@@ -271,13 +332,3 @@
                         @foreach ($categorias as $categoria)
                             <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
                         @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="ap-modal-actions">
-                <button type="button" class="ap-btn ap-btn--secondary" onclick="closeModal('modal-prod-sabor-crear')">Cancelar</button>
-                <button type="submit" class="ap-btn ap-btn--primary">Crear sabor</button>
-            </div>
-        </form>
-    </div>
-</div>

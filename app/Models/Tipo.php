@@ -12,6 +12,11 @@ class Tipo extends Model
         'codigo',
         'nombre',
         'categoria_id',
+        'requiere_sabor',
+    ];
+
+    protected $casts = [
+        'requiere_sabor' => 'boolean',
     ];
 
     public function categoria(): BelongsTo

@@ -33,6 +33,7 @@
                     <th>Código</th>
                     <th>Nombre</th>
                     <th>Categoría</th>
+                    <th>Sabor</th>
                     <th></th>
                 </tr>
             </thead>
@@ -42,6 +43,29 @@
                         <td>{{ $tipo->codigo }}</td>
                         <td>{{ $tipo->nombre }}</td>
                         <td>{{ $tipo->categoria->nombre ?? '—' }}</td>
+                        <td>
+                            @if ($tipo->requiere_sabor)
+                                <span style="
+                                    display: inline-block;
+                                    padding: 2px 10px;
+                                    border-radius: 20px;
+                                    font-size: 0.75rem;
+                                    font-weight: 600;
+                                    background: rgba(98,87,223,0.10);
+                                    color: #6257df;
+                                ">Con sabor</span>
+                            @else
+                                <span style="
+                                    display: inline-block;
+                                    padding: 2px 10px;
+                                    border-radius: 20px;
+                                    font-size: 0.75rem;
+                                    font-weight: 600;
+                                    background: rgba(107,99,85,0.10);
+                                    color: #6b6355;
+                                ">Sin sabor</span>
+                            @endif
+                        </td>
                         <td style="white-space: nowrap;">
                             <button
                                 type="button"
@@ -51,6 +75,7 @@
                                 data-codigo="{{ $tipo->codigo }}"
                                 data-nombre="{{ $tipo->nombre }}"
                                 data-categoria-id="{{ $tipo->categoria_id }}"
+                                data-requiere-sabor="{{ $tipo->requiere_sabor ? '1' : '0' }}"
                                 data-url="{{ route('admin.tipos.update', $tipo) }}"
                             >
                                 Editar
@@ -69,7 +94,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" style="text-align: center; padding: 24px;">
+                        <td colspan="5" style="text-align: center; padding: 24px;">
                             No hay tipos registrados todavía.
                         </td>
                     </tr>
@@ -134,6 +159,20 @@
                             <span class="ap-form-error">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="ap-form-group ap-form-group--checkbox" style="grid-column: 1 / -1;">
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="requiere_sabor"
+                                value="1"
+                                @checked(old('requiere_sabor'))
+                            >
+                            Requiere sabor
+                            <small style="display:block; color:#6b6355; font-size:0.78rem; margin-top:2px; font-weight:400;">
+                                Ej: Yogurt Frutado ✓ — Yogurt Natural ✗
+                            </small>
+                        </label>
+                    </div>
                 </div>
                 <div class="ap-modal-actions">
                     <button type="button" class="ap-btn ap-btn--secondary" onclick="closeModal('modal-tipo-crear')">Cancelar</button>
@@ -181,6 +220,20 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="ap-form-group ap-form-group--checkbox" style="grid-column: 1 / -1;">
+                        <label>
+                            <input
+                                type="checkbox"
+                                id="editar-requiere-sabor"
+                                name="requiere_sabor"
+                                value="1"
+                            >
+                            Requiere sabor
+                            <small style="display:block; color:#6b6355; font-size:0.78rem; margin-top:2px; font-weight:400;">
+                                Ej: Yogurt Frutado ✓ — Yogurt Natural ✗
+                            </small>
+                        </label>
+                    </div>
                 </div>
                 <div class="ap-modal-actions">
                     <button type="button" class="ap-btn ap-btn--secondary" onclick="closeModal('modal-tipo-editar')">Cancelar</button>
@@ -196,9 +249,10 @@
     // Pre-popular modal de edición
     document.querySelectorAll('[data-edit-tipo]').forEach(btn => {
         btn.addEventListener('click', () => {
-            document.getElementById('editar-codigo').value          = btn.dataset.codigo;
-            document.getElementById('editar-nombre-tipo').value     = btn.dataset.nombre;
-            document.getElementById('form-editar-tipo').action      = btn.dataset.url;
+            document.getElementById('editar-codigo').value      = btn.dataset.codigo;
+            document.getElementById('editar-nombre-tipo').value = btn.dataset.nombre;
+            document.getElementById('form-editar-tipo').action  = btn.dataset.url;
+            document.getElementById('editar-requiere-sabor').checked = btn.dataset.requiereSabor === '1';
 
             // Seleccionar la categoría correcta
             const sel = document.getElementById('editar-categoria-tipo');
