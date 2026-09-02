@@ -12,6 +12,8 @@
 
   {{-- Chart.js desde CDN (requerido por la plantilla) --}}
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+
 
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -38,7 +40,10 @@
 
       <nav class="ap-nav">
         <p class="ap-nav__title">PRINCIPAL</p>
-        <button class="ap-nav__item active" data-section="dashboard">
+        <button
+          class="ap-nav__item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+          data-section="dashboard"
+        >
           <span class="ap-nav__icon">⌂</span>
           <span>Dashboard</span>
         </button>
@@ -60,10 +65,13 @@
         </button>
 
         <p class="ap-nav__title">OPERACIONES</p>
-        <button class="ap-nav__item" data-section="inventarios">
+        <a
+          href="{{ route('admin.productos.index') }}"
+          class="ap-nav__item {{ request()->routeIs('admin.productos.*') ? 'active' : '' }}"
+        >
           <span class="ap-nav__icon">▤</span>
-          <span>Inventarios</span>
-        </button>
+          <span>Catálogo de Productos</span>
+        </a>
         <button class="ap-nav__item" data-section="compras">
           <span class="ap-nav__icon">⇄</span>
           <span>Compras</span>
@@ -131,6 +139,18 @@
   {{-- Toast global --}}
   <div class="ap-toast" id="toast" role="status" aria-live="polite">Operación realizada</div>
 
+  {{-- Modal de confirmación reutilizable para acciones destructivas --}}
+    <div class="ap-modal-overlay" id="confirmModalOverlay">
+        <div class="ap-modal">
+            <h3>¿Confirmar acción?</h3>
+            <p id="confirmModalMessage">Esta acción no se puede deshacer.</p>
+            <div class="ap-modal-actions">
+                <button type="button" class="ap-btn ap-btn--secondary" id="confirmModalCancel">Cancelar</button>
+                <button type="button" class="ap-btn ap-btn--danger" id="confirmModalAccept">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
   {{-- Script del panel --}}
   <script>
     // Fecha actual dinámica
@@ -162,15 +182,27 @@
     };
 
     navItems.forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
         const id = btn.dataset.section;
-        navItems.forEach(x => x.classList.remove('active'));
-        btn.classList.add('active');
-        sections.forEach(s => s.classList.toggle('ap-section--active', s.id === id));
-        if (breadcrumb) breadcrumb.textContent = sectionNames[id] || id;
-        sidebar.classList.remove('open');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        setTimeout(initCharts, 30);
+        if (!id) return; // Es un enlace normal con href
+        
+        // Prevenir comportamiento default por si acaso
+        e.preventDefault();
+
+        // Si estamos en el dashboard (existen las secciones)
+        if (document.getElementById(id)) {
+            navItems.forEach(x => x.classList.remove('active'));
+            btn.classList.add('active');
+            sections.forEach(s => s.classList.toggle('ap-section--active', s.id === id));
+            if (breadcrumb) breadcrumb.textContent = sectionNames[id] || id;
+            sidebar.classList.remove('open');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(initCharts, 30);
+            history.replaceState(null, null, '{{ route('admin.dashboard') }}#' + id);
+        } else {
+            // Estamos en otra página, redirigir al dashboard con hash
+            window.location.href = '{{ route('admin.dashboard') }}#' + id;
+        }
       });
     });
 
@@ -185,6 +217,36 @@
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 2400);
     }
+
+    // ── Modales genéricos ────────────────────────────────────────────────────
+    function openModal(id) {
+      const overlay = document.getElementById(id);
+      if (!overlay) return;
+      overlay.classList.add('ap-modal-overlay--open');
+      // Foco en el primer input para accesibilidad
+      setTimeout(() => {
+        const firstInput = overlay.querySelector('input:not([type=hidden]), select, textarea');
+        if (firstInput) firstInput.focus();
+      }, 80);
+    }
+    function closeModal(id) {
+      const overlay = document.getElementById(id);
+      if (overlay) overlay.classList.remove('ap-modal-overlay--open');
+    }
+    // Cerrar cualquier modal al hacer clic fuera del contenido
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('ap-modal-overlay')) {
+        e.target.classList.remove('ap-modal-overlay--open');
+      }
+    });
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.ap-modal-overlay--open').forEach(el => {
+          el.classList.remove('ap-modal-overlay--open');
+        });
+      }
+    });
 
     // Charts — idénticos a la plantilla original
     let charts = {};
@@ -248,7 +310,49 @@
       }, { cutout: '68%', plugins: { legend: { position: 'bottom' } }, scales: { x: { display: false }, y: { display: false } } });
     }
 
-    document.addEventListener('DOMContentLoaded', initCharts);
+    document.addEventListener('DOMContentLoaded', () => {
+        // Abrir sección correcta si hay un hash en la URL al cargar
+        if (window.location.hash) {
+            const id = window.location.hash.substring(1);
+            const targetBtn = document.querySelector(`.ap-nav__item[data-section="${id}"]`);
+            if (targetBtn && document.getElementById(id)) {
+                // Ejecutamos el clic para activar la sección
+                targetBtn.click();
+            }
+        }
+
+        const confirmForms  = document.querySelectorAll('form[data-confirm]');
+        const modalOverlay  = document.getElementById('confirmModalOverlay');
+        const modalMessage  = document.getElementById('confirmModalMessage');
+        const modalCancel   = document.getElementById('confirmModalCancel');
+        const modalAccept   = document.getElementById('confirmModalAccept');
+        let formPendingSubmit = null;
+
+        confirmForms.forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                formPendingSubmit = form;
+                modalMessage.textContent = form.dataset.confirm;
+                modalOverlay.classList.add('ap-modal-overlay--open');
+            });
+        });
+
+        modalCancel?.addEventListener('click', () => {
+            modalOverlay.classList.remove('ap-modal-overlay--open');
+            formPendingSubmit = null;
+        });
+
+        modalAccept?.addEventListener('click', () => {
+            if (formPendingSubmit) formPendingSubmit.submit();
+        });
+
+        modalOverlay?.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('ap-modal-overlay--open');
+                formPendingSubmit = null;
+            }
+        });
+    });
   </script>
 
   @stack('scripts')

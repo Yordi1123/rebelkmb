@@ -18,7 +18,7 @@ class DashboardController extends Controller
     public function index(): View
     {
         $kpis = [
-            // Datos del usuario autenticado
+            // Datos del usuario autenticadoS
             'usuario'           => auth()->user()->name,
             'rol'               => auth()->user()->rol,
 
