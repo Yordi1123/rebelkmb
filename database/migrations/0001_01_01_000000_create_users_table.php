@@ -17,6 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            // Rol del usuario: extensible para futuros perfiles (planificador, operador, calidad, etc.)
+            $table->enum('rol', ['administrador', 'planificador', 'operador', 'calidad'])
+                  ->default('administrador');
+            // Permite deshabilitar usuarios sin eliminarlos (auditoría)
+            $table->boolean('activo')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

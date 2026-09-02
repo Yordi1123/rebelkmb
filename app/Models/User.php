@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -22,6 +20,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'rol',
+        'activo',
     ];
 
     /**
@@ -43,7 +43,30 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
+            'activo'            => 'boolean',
         ];
     }
+
+    /**
+     * Verifica si el usuario tiene un rol específico.
+     * Útil para gates y políticas en futuras iteraciones.
+     */
+    public function hasRol(string $rol): bool
+    {
+        return $this->rol === $rol;
+    }
+
+    /**
+     * Verifica si el usuario es administrador.
+     */
+    public function esAdministrador(): bool
+    {
+        return $this->rol === 'administrador';
+    }
+
+    // Relaciones con tablas del sistema (se activarán en futuras ramas)
+    // public function lotes() { return $this->hasMany(Lote::class); }
+    // public function preinóculos() { return $this->hasMany(Preinoculo::class); }
+    // public function controlPh() { return $this->hasMany(ControlPh::class); }
 }
