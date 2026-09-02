@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\TipoController;
 use App\Http\Controllers\Admin\SaborController;
+use App\Http\Controllers\Admin\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,4 +37,5 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('/categorias', CategoriaController::class)->except('show');
     Route::resource('/tipos', TipoController::class)->except('show');
     Route::resource('/sabores', SaborController::class)->except('show');
+    Route::resource('/usuarios', UserController::class)->except('show');
 });
