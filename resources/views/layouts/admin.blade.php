@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +20,7 @@
 
   @stack('styles')
 </head>
+
 <body class="admin-panel">
   <div class="ap-app">
 
@@ -40,10 +42,8 @@
 
       <nav class="ap-nav">
         <p class="ap-nav__title">PRINCIPAL</p>
-        <button
-          class="ap-nav__item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
-          data-section="dashboard"
-        >
+        <button class="ap-nav__item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+          data-section="dashboard">
           <span class="ap-nav__icon">⌂</span>
           <span>Dashboard</span>
         </button>
@@ -65,10 +65,8 @@
         </button>
 
         <p class="ap-nav__title">OPERACIONES</p>
-        <a
-          href="{{ route('admin.productos.index') }}"
-          class="ap-nav__item {{ request()->routeIs('admin.productos.*') ? 'active' : '' }}"
-        >
+        <a href="{{ route('admin.productos.index') }}"
+          class="ap-nav__item {{ request()->routeIs('admin.productos.*') ? 'active' : '' }}">
           <span class="ap-nav__icon">▤</span>
           <span>Catálogo de Productos</span>
         </a>
@@ -94,6 +92,11 @@
           <span class="ap-nav__icon">▥</span>
           <span>Reportes</span>
         </button>
+        <a href="{{ route('admin.usuarios.index') }}"
+          class="ap-nav__item {{ request()->routeIs('admin.usuarios.*') ? 'active' : '' }}">
+          <span class="ap-nav__icon">웃</span>
+          <span>Usuarios</span>
+        </a>
       </nav>
 
       <div class="ap-sidebar__footer">
@@ -140,16 +143,16 @@
   <div class="ap-toast" id="toast" role="status" aria-live="polite">Operación realizada</div>
 
   {{-- Modal de confirmación reutilizable para acciones destructivas --}}
-    <div class="ap-modal-overlay" id="confirmModalOverlay">
-        <div class="ap-modal">
-            <h3>¿Confirmar acción?</h3>
-            <p id="confirmModalMessage">Esta acción no se puede deshacer.</p>
-            <div class="ap-modal-actions">
-                <button type="button" class="ap-btn ap-btn--secondary" id="confirmModalCancel">Cancelar</button>
-                <button type="button" class="ap-btn ap-btn--danger" id="confirmModalAccept">Eliminar</button>
-            </div>
-        </div>
+  <div class="ap-modal-overlay" id="confirmModalOverlay">
+    <div class="ap-modal">
+      <h3>¿Confirmar acción?</h3>
+      <p id="confirmModalMessage">Esta acción no se puede deshacer.</p>
+      <div class="ap-modal-actions">
+        <button type="button" class="ap-btn ap-btn--secondary" id="confirmModalCancel">Cancelar</button>
+        <button type="button" class="ap-btn ap-btn--danger" id="confirmModalAccept">Eliminar</button>
+      </div>
     </div>
+  </div>
 
   {{-- Script del panel --}}
   <script>
@@ -162,46 +165,46 @@
     }
 
     // Navegación entre secciones SPA
-    const navItems  = document.querySelectorAll('.ap-nav__item');
-    const sections  = document.querySelectorAll('.ap-section');
+    const navItems = document.querySelectorAll('.ap-nav__item');
+    const sections = document.querySelectorAll('.ap-section');
     const breadcrumb = document.getElementById('breadcrumb');
-    const sidebar   = document.getElementById('sidebar');
+    const sidebar = document.getElementById('sidebar');
 
     const sectionNames = {
-      dashboard:   'Dashboard',
-      pedidos:     'Pedidos / Ventas',
+      dashboard: 'Dashboard',
+      pedidos: 'Pedidos / Ventas',
       pronosticos: 'Pronósticos',
-      mps:         'MPS',
-      mrp:         'MRP',
+      mps: 'MPS',
+      mrp: 'MRP',
       inventarios: 'Inventarios',
-      compras:     'Compras',
-      produccion:  'Producción',
-      lotes:       'Lotes / Trazabilidad',
-      terminados:  'Producto terminado',
-      reportes:    'Reportes',
+      compras: 'Compras',
+      produccion: 'Producción',
+      lotes: 'Lotes / Trazabilidad',
+      terminados: 'Producto terminado',
+      reportes: 'Reportes',
     };
 
     navItems.forEach(btn => {
       btn.addEventListener('click', (e) => {
         const id = btn.dataset.section;
         if (!id) return; // Es un enlace normal con href
-        
+
         // Prevenir comportamiento default por si acaso
         e.preventDefault();
 
         // Si estamos en el dashboard (existen las secciones)
         if (document.getElementById(id)) {
-            navItems.forEach(x => x.classList.remove('active'));
-            btn.classList.add('active');
-            sections.forEach(s => s.classList.toggle('ap-section--active', s.id === id));
-            if (breadcrumb) breadcrumb.textContent = sectionNames[id] || id;
-            sidebar.classList.remove('open');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            setTimeout(initCharts, 30);
-            history.replaceState(null, null, '{{ route('admin.dashboard') }}#' + id);
+          navItems.forEach(x => x.classList.remove('active'));
+          btn.classList.add('active');
+          sections.forEach(s => s.classList.toggle('ap-section--active', s.id === id));
+          if (breadcrumb) breadcrumb.textContent = sectionNames[id] || id;
+          sidebar.classList.remove('open');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          setTimeout(initCharts, 30);
+          history.replaceState(null, null, '{{ route('admin.dashboard') }}#' + id);
         } else {
-            // Estamos en otra página, redirigir al dashboard con hash
-            window.location.href = '{{ route('admin.dashboard') }}#' + id;
+          // Estamos en otra página, redirigir al dashboard con hash
+          window.location.href = '{{ route('admin.dashboard') }}#' + id;
         }
       });
     });
@@ -275,86 +278,87 @@
       makeChart('demandChart', 'line', {
         labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago'],
         datasets: [
-          { label: 'Demanda real',  data: [720, 810, 760, 930, 1010, 980, 1120, 1180], borderWidth: 2, tension: .35, pointRadius: 2, borderColor: '#6257df' },
-          { label: 'Pronóstico',    data: [700, 780, 790, 880, 970, 1000, 1080, 1150], borderWidth: 2, tension: .35, borderDash: [5,4], pointRadius: 1, borderColor: '#e6963c' }
+          { label: 'Demanda real', data: [720, 810, 760, 930, 1010, 980, 1120, 1180], borderWidth: 2, tension: .35, pointRadius: 2, borderColor: '#6257df' },
+          { label: 'Pronóstico', data: [700, 780, 790, 880, 970, 1000, 1080, 1150], borderWidth: 2, tension: .35, borderDash: [5, 4], pointRadius: 1, borderColor: '#e6963c' }
         ]
       });
       makeChart('inventoryChart', 'doughnut', {
         labels: ['Materia prima', 'Prod. terminado', 'Empaques', 'Otros'],
-        datasets: [{ data: [46, 28, 16, 10], borderWidth: 0, backgroundColor: ['#6257df','#2aa873','#e6963c','#b0b8cc'] }]
+        datasets: [{ data: [46, 28, 16, 10], borderWidth: 0, backgroundColor: ['#6257df', '#2aa873', '#e6963c', '#b0b8cc'] }]
       }, { cutout: '70%', plugins: { legend: { position: 'bottom' } }, scales: { x: { display: false }, y: { display: false } } });
       makeChart('forecastChart', 'line', {
         labels: ['Sep', 'Oct', 'Nov', 'Dic', 'Ene', 'Feb', 'Mar', 'Abr'],
         datasets: [
-          { label: 'Histórico', data: [1150,1190,1220,1280,1310,1360,1410,1450], borderWidth: 2, tension: .3, borderColor: '#6257df' },
-          { label: 'Pronóstico', data: [1200,1240,1290,1340,1380,1430,1480,1530], borderWidth: 2, tension: .3, borderDash: [5,4], borderColor: '#e6963c' }
+          { label: 'Histórico', data: [1150, 1190, 1220, 1280, 1310, 1360, 1410, 1450], borderWidth: 2, tension: .3, borderColor: '#6257df' },
+          { label: 'Pronóstico', data: [1200, 1240, 1290, 1340, 1380, 1430, 1480, 1530], borderWidth: 2, tension: .3, borderDash: [5, 4], borderColor: '#e6963c' }
         ]
       });
       makeChart('stockChart', 'line', {
-        labels: ['01','05','10','15','20','25','30'],
+        labels: ['01', '05', '10', '15', '20', '25', '30'],
         datasets: [
-          { label: 'Stock disponible', data: [82,79,75,81,77,73,76], borderWidth: 2, tension: .35, fill: true, borderColor: '#6257df', backgroundColor: 'rgba(98,87,223,0.08)' },
-          { label: 'Stock mínimo', data: [55,55,55,55,55,55,55], borderWidth: 1, borderDash: [4,4], tension: 0, borderColor: '#e6963c' }
+          { label: 'Stock disponible', data: [82, 79, 75, 81, 77, 73, 76], borderWidth: 2, tension: .35, fill: true, borderColor: '#6257df', backgroundColor: 'rgba(98,87,223,0.08)' },
+          { label: 'Stock mínimo', data: [55, 55, 55, 55, 55, 55, 55], borderWidth: 1, borderDash: [4, 4], tension: 0, borderColor: '#e6963c' }
         ]
       });
       makeChart('productionChart', 'bar', {
         labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
         datasets: [
-          { label: 'Planificado', data: [1200,1350,1400,1500,1450,980], borderRadius: 4, backgroundColor: '#6257df' },
-          { label: 'Real', data: [1160,1290,1370,1420,1410,920], borderRadius: 4, backgroundColor: '#2aa873' }
+          { label: 'Planificado', data: [1200, 1350, 1400, 1500, 1450, 980], borderRadius: 4, backgroundColor: '#6257df' },
+          { label: 'Real', data: [1160, 1290, 1370, 1420, 1410, 920], borderRadius: 4, backgroundColor: '#2aa873' }
         ]
       });
       makeChart('finishedChart', 'doughnut', {
         labels: ['Yogurt', 'Kombucha Fresa', 'Kombucha Arándanos'],
-        datasets: [{ data: [42, 33, 25], borderWidth: 0, backgroundColor: ['#6257df','#2aa873','#e6963c'] }]
+        datasets: [{ data: [42, 33, 25], borderWidth: 0, backgroundColor: ['#6257df', '#2aa873', '#e6963c'] }]
       }, { cutout: '68%', plugins: { legend: { position: 'bottom' } }, scales: { x: { display: false }, y: { display: false } } });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        // Abrir sección correcta si hay un hash en la URL al cargar
-        if (window.location.hash) {
-            const id = window.location.hash.substring(1);
-            const targetBtn = document.querySelector(`.ap-nav__item[data-section="${id}"]`);
-            if (targetBtn && document.getElementById(id)) {
-                // Ejecutamos el clic para activar la sección
-                targetBtn.click();
-            }
+      // Abrir sección correcta si hay un hash en la URL al cargar
+      if (window.location.hash) {
+        const id = window.location.hash.substring(1);
+        const targetBtn = document.querySelector(`.ap-nav__item[data-section="${id}"]`);
+        if (targetBtn && document.getElementById(id)) {
+          // Ejecutamos el clic para activar la sección
+          targetBtn.click();
         }
+      }
 
-        const confirmForms  = document.querySelectorAll('form[data-confirm]');
-        const modalOverlay  = document.getElementById('confirmModalOverlay');
-        const modalMessage  = document.getElementById('confirmModalMessage');
-        const modalCancel   = document.getElementById('confirmModalCancel');
-        const modalAccept   = document.getElementById('confirmModalAccept');
-        let formPendingSubmit = null;
+      const confirmForms = document.querySelectorAll('form[data-confirm]');
+      const modalOverlay = document.getElementById('confirmModalOverlay');
+      const modalMessage = document.getElementById('confirmModalMessage');
+      const modalCancel = document.getElementById('confirmModalCancel');
+      const modalAccept = document.getElementById('confirmModalAccept');
+      let formPendingSubmit = null;
 
-        confirmForms.forEach(form => {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                formPendingSubmit = form;
-                modalMessage.textContent = form.dataset.confirm;
-                modalOverlay.classList.add('ap-modal-overlay--open');
-            });
+      confirmForms.forEach(form => {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          formPendingSubmit = form;
+          modalMessage.textContent = form.dataset.confirm;
+          modalOverlay.classList.add('ap-modal-overlay--open');
         });
+      });
 
-        modalCancel?.addEventListener('click', () => {
-            modalOverlay.classList.remove('ap-modal-overlay--open');
-            formPendingSubmit = null;
-        });
+      modalCancel?.addEventListener('click', () => {
+        modalOverlay.classList.remove('ap-modal-overlay--open');
+        formPendingSubmit = null;
+      });
 
-        modalAccept?.addEventListener('click', () => {
-            if (formPendingSubmit) formPendingSubmit.submit();
-        });
+      modalAccept?.addEventListener('click', () => {
+        if (formPendingSubmit) formPendingSubmit.submit();
+      });
 
-        modalOverlay?.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove('ap-modal-overlay--open');
-                formPendingSubmit = null;
-            }
-        });
+      modalOverlay?.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+          modalOverlay.classList.remove('ap-modal-overlay--open');
+          formPendingSubmit = null;
+        }
+      });
     });
   </script>
 
   @stack('scripts')
 </body>
+
 </html>
