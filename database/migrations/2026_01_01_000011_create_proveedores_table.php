@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create('proveedores', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
+            $table->string('ruc')->nullable()->unique();
+            $table->string('direccion')->nullable();
             $table->string('contacto')->nullable();
             $table->integer('lead_time_dias')->default(0); // Días de entrega estimados
             $table->timestamps();

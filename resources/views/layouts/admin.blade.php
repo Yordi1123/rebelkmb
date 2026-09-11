@@ -70,6 +70,11 @@
           <span class="ap-nav__icon">▤</span>
           <span>Catálogo de Productos</span>
         </a>
+        <a href="{{ route('admin.proveedores.index') }}"
+          class="ap-nav__item {{ request()->routeIs('admin.proveedores.*') ? 'active' : '' }}">
+          <span class="ap-nav__icon">⇆</span>
+          <span>Proveedores</span>
+        </a>
         <button class="ap-nav__item" data-section="compras">
           <span class="ap-nav__icon">⇄</span>
           <span>Compras</span>
