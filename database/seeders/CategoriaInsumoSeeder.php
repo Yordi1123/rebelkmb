@@ -15,6 +15,7 @@ class CategoriaInsumoSeeder extends Seeder
             ['nombre' => 'Frutas y Saborizantes', 'descripcion' => 'Frutas usadas para dar sabor a kombucha y yogurt.'],
             ['nombre' => 'Cultivos y Fermentos', 'descripcion' => 'Cultivo de yogurt, té base para kombucha.'],
             ['nombre' => 'Envases y Empaques', 'descripcion' => 'Botellas y envases para el producto terminado.'],
+            ['nombre' => 'Aditivos y Conservantes', 'descripcion' => 'Insumos químicos: conservantes, aditivos de proceso.'],
         ];
 
         foreach ($categorias as $categoria) {
