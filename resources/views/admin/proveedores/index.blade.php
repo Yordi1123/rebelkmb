@@ -34,6 +34,7 @@
                     <th>RUC</th>
                     <th>Dirección</th>
                     <th>Contacto</th>
+                    <th>Insumos</th>
                     <th>Lead Time</th>
                     <th></th>
                 </tr>
@@ -47,6 +48,11 @@
                             {{ $proveedor->direccion ?? '—' }}
                         </td>
                         <td style="font-weight: 400;">{{ $proveedor->contacto ?? '—' }}</td>
+                        <td>
+                            <span class="ap-status" style="background: #fdf5eb; color: #b47d33;">
+                                {{ $proveedor->insumos_count }}
+                            </span>
+                        </td>
                         <td>
                             <span class="ap-status" style="background: #e9f2ff; color: #4382df;">
                                 {{ $proveedor->lead_time_dias }} {{ $proveedor->lead_time_dias === 1 ? 'día' : 'días' }}

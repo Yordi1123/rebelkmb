@@ -69,8 +69,11 @@ class InsumoController extends Controller
 
     public function update(InsumoRequest $request, Insumo $insumo): RedirectResponse
     {
+        $data = $request->validated();
+        unset($data['stock_actual']); // Protegemos el stock en la actualización (solo Kardex puede cambiarlo)
+
         $insumo->update([
-            ...$request->validated(),
+            ...$data,
             'activo' => $request->boolean('activo'),
         ]);
 

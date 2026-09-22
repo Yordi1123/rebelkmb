@@ -59,6 +59,7 @@
                     <th>Código</th>
                     <th>Nombre</th>
                     <th>Categoría</th>
+                    <th>Proveedor</th>
                     <th>Unidad</th>
                     <th>Stock actual</th>
                     <th>Stock mínimo</th>
@@ -72,6 +73,7 @@
                         <td>{{ $insumo->codigo }}</td>
                         <td>{{ $insumo->nombre }}</td>
                         <td>{{ $insumo->categoriaInsumo->nombre ?? '—' }}</td>
+                        <td>{{ $insumo->proveedor->nombre ?? '—' }}</td>
                         <td>{{ ucfirst($insumo->unidad_medida) }}</td>
                         <td>{{ number_format($insumo->stock_actual, 2) }}</td>
                         <td>{{ number_format($insumo->stock_minimo, 2) }}</td>

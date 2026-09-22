@@ -65,9 +65,6 @@
                     </option>
                 @endforeach
             </select>
-            <small style="color: #6b6355; font-size: 0.78rem;">
-                Este dropdown quedará vacío hasta que el módulo de Proveedores de Franco esté fusionado.
-            </small>
         </div>
 
         <div class="ap-form-group">
@@ -95,10 +92,16 @@
                 name="stock_actual"
                 class="ap-input @error('stock_actual') ap-input--error @enderror"
                 value="{{ old('stock_actual', $insumo->stock_actual ?? 0) }}"
+                @if(isset($insumo)) readonly style="background-color: #f3f4f6; cursor: not-allowed; color: #6b6355;" @endif
             >
             @error('stock_actual')
                 <span class="ap-form-error">{{ $message }}</span>
             @enderror
+            @if(isset($insumo))
+                <small style="color: #6b6355; font-size: 0.78rem; display: block; margin-top: 4px;">
+                    🔒 El stock actual no se puede modificar manualmente por trazabilidad. Use el Kardex.
+                </small>
+            @endif
         </div>
 
         <div class="ap-form-group">

@@ -25,4 +25,9 @@ class Proveedor extends Model
     // {
     //     return $this->hasMany(OrdenCompra::class);
     // }
+
+    public function insumos()
+    {
+        return $this->hasMany(Insumo::class);
+    }
 }

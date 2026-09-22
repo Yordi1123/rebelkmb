@@ -24,13 +24,18 @@ class InsumoRequest extends FormRequest
                 'max:20',
                 Rule::unique('materiales', 'codigo')->ignore($insumoId),
             ],
-            'nombre' => ['required', 'string', 'max:255'],
+            'nombre' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('materiales', 'nombre')->ignore($insumoId),
+            ],
             'categoria_insumo_id' => ['required', 'exists:categorias_insumo,id'],
             'proveedor_id' => ['nullable', 'exists:proveedores,id'],
             'unidad_medida' => ['required', Rule::in(Insumo::UNIDADES)],
-            'stock_actual' => ['required', 'numeric', 'min:0'],
+            'stock_actual' => ['nullable', 'numeric', 'min:0'],
             'stock_minimo' => ['required', 'numeric', 'min:0'],
-            'stock_seguridad' => ['nullable', 'numeric', 'min:0'],
+            'stock_seguridad' => ['nullable', 'numeric', 'min:0', 'lte:stock_minimo'],
             'activo' => ['nullable', 'boolean'],
         ];
     }
@@ -41,9 +46,11 @@ class InsumoRequest extends FormRequest
             'codigo.required' => 'El código es obligatorio.',
             'codigo.unique' => 'Ya existe un insumo con ese código.',
             'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.unique' => 'Ya existe un insumo con ese nombre.',
             'categoria_insumo_id.required' => 'Selecciona una categoría.',
             'unidad_medida.required' => 'Selecciona una unidad de medida.',
             'unidad_medida.in' => 'Esa unidad de medida no es válida.',
+            'stock_seguridad.lte' => 'El stock de seguridad no puede ser mayor al stock mínimo.',
         ];
     }
 }
