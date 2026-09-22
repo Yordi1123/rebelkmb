@@ -64,11 +64,11 @@
           <span>MRP</span>
         </button>
 
-        <p class="ap-nav__title">OPERACIONES</p>
+        <p class="ap-nav__title">CATÁLOGOS</p>
         <a href="{{ route('admin.productos.index') }}"
           class="ap-nav__item {{ request()->routeIs('admin.productos.*') ? 'active' : '' }}">
           <span class="ap-nav__icon">▤</span>
-          <span>Catálogo de Productos</span>
+          <span>Productos</span>
         </a>
         <a href="{{ route('admin.proveedores.index') }}"
           class="ap-nav__item {{ request()->routeIs('admin.proveedores.*') ? 'active' : '' }}">
@@ -80,6 +80,8 @@
           <span class="ap-nav__icon">◫</span>
           <span>Insumos</span>
         </a>
+
+        <p class="ap-nav__title">OPERACIONES</p>
         <button class="ap-nav__item" data-section="compras">
           <span class="ap-nav__icon">⇄</span>
           <span>Compras</span>
