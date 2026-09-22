@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             SaborSeeder::class,
             ProductoSeeder::class,
             CategoriaInsumoSeeder::class,
+            ProveedorSeeder::class,
             InsumoSeeder::class,
         ]);
     }
