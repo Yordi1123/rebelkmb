@@ -70,6 +70,12 @@
           <span class="ap-nav__icon">▤</span>
           <span>Catálogo de Productos</span>
         </a>
+
+        <a href="{{ route('admin.insumos.index') }}"
+          class="ap-nav__item {{ request()->routeIs('admin.insumos.*') || request()->routeIs('admin.categorias-insumo.*') ? 'active' : '' }}">
+          <span class="ap-nav__icon">◫</span>
+          <span>Insumos</span>
+        </a>
         <button class="ap-nav__item" data-section="compras">
           <span class="ap-nav__icon">⇄</span>
           <span>Compras</span>
