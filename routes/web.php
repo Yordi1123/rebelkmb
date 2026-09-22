@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\TipoController;
 use App\Http\Controllers\Admin\SaborController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProveedorController;
+use App\Http\Controllers\Admin\InsumoController;
+use App\Http\Controllers\Admin\CategoriaInsumoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,4 +42,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('/sabores', SaborController::class)->except('show');
     Route::resource('/proveedores', ProveedorController::class)->except('show');
     Route::resource('/usuarios', UserController::class)->except('show');
+    Route::resource('/insumos', InsumoController::class);
+    Route::resource('/categorias-insumo', CategoriaInsumoController::class)
+        ->except('show')
+        ->parameters(['categorias-insumo' => 'categoria_insumo']);
 });

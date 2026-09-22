@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             TipoSeeder::class,
             SaborSeeder::class,
             ProductoSeeder::class,
+            CategoriaInsumoSeeder::class,
+            InsumoSeeder::class,
         ]);
     }
 }
