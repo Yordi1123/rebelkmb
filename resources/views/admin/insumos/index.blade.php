@@ -91,6 +91,7 @@
                                 action="{{ route('admin.insumos.destroy', $insumo) }}"
                                 style="display: inline;"
                                 data-confirm="¿{{ $insumo->activo ? 'Desactivar' : 'Activar' }} este insumo?"
+                                data-confirm-label="{{ $insumo->activo ? 'Desactivar' : 'Activar' }}"
                             >
                                 @csrf
                                 @method('DELETE')

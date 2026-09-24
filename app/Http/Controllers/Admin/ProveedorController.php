@@ -26,11 +26,12 @@ class ProveedorController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'nombre'         => ['required', 'string', 'max:255'],
-            'ruc'            => ['nullable', 'string', 'max:20', 'unique:proveedores,ruc'],
-            'direccion'      => ['nullable', 'string', 'max:500'],
-            'contacto'       => ['nullable', 'string', 'max:255'],
-            'lead_time_dias' => ['required', 'integer', 'min:0'],
+            'nombre'           => ['required', 'string', 'max:255'],
+            'ruc'              => ['nullable', 'digits:11', 'unique:proveedores,ruc'],
+            'direccion'        => ['nullable', 'string', 'max:500'],
+            'contacto_nombre'  => ['nullable', 'string', 'max:255'],
+            'contacto_celular' => ['nullable', 'digits:9'],
+            'lead_time_dias'   => ['required', 'integer', 'min:0'],
         ]);
 
         Proveedor::create($data);
@@ -48,11 +49,12 @@ class ProveedorController extends Controller
     public function update(Request $request, Proveedor $proveedore): RedirectResponse
     {
         $data = $request->validate([
-            'nombre'         => ['required', 'string', 'max:255'],
-            'ruc'            => ['nullable', 'string', 'max:20', Rule::unique('proveedores', 'ruc')->ignore($proveedore->id)],
-            'direccion'      => ['nullable', 'string', 'max:500'],
-            'contacto'       => ['nullable', 'string', 'max:255'],
-            'lead_time_dias' => ['required', 'integer', 'min:0'],
+            'nombre'           => ['required', 'string', 'max:255'],
+            'ruc'              => ['nullable', 'digits:11', Rule::unique('proveedores', 'ruc')->ignore($proveedore->id)],
+            'direccion'        => ['nullable', 'string', 'max:500'],
+            'contacto_nombre'  => ['nullable', 'string', 'max:255'],
+            'contacto_celular' => ['nullable', 'digits:9'],
+            'lead_time_dias'   => ['required', 'integer', 'min:0'],
         ]);
 
         $proveedore->update($data);

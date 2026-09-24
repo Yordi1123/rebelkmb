@@ -95,10 +95,16 @@
                 name="stock_actual"
                 class="ap-input @error('stock_actual') ap-input--error @enderror"
                 value="{{ old('stock_actual', $insumo->stock_actual ?? 0) }}"
+                @if (isset($insumo)) readonly style="background: #f2f0ea; cursor: not-allowed;" @endif
             >
             @error('stock_actual')
                 <span class="ap-form-error">{{ $message }}</span>
             @enderror
+            @if (isset($insumo))
+                <small style="color: #6b6355; font-size: 0.78rem;">
+                    El stock actual solo se puede modificar mediante Compras o Despachos (trazabilidad). No se edita "a dedo" aquí.
+                </small>
+            @endif
         </div>
 
         <div class="ap-form-group">

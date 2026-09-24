@@ -34,6 +34,7 @@
                     <th>RUC</th>
                     <th>Dirección</th>
                     <th>Contacto</th>
+                    <th>Celular</th>
                     <th>Lead Time</th>
                     <th></th>
                 </tr>
@@ -46,7 +47,8 @@
                         <td style="font-weight: 400; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ $proveedor->direccion }}">
                             {{ $proveedor->direccion ?? '—' }}
                         </td>
-                        <td style="font-weight: 400;">{{ $proveedor->contacto ?? '—' }}</td>
+                        <td style="font-weight: 400;">{{ $proveedor->contacto_nombre ?? '—' }}</td>
+                        <td style="font-weight: 400;">{{ $proveedor->contacto_celular ?? '—' }}</td>
                         <td>
                             <span class="ap-status" style="background: #e9f2ff; color: #4382df;">
                                 {{ $proveedor->lead_time_dias }} {{ $proveedor->lead_time_dias === 1 ? 'día' : 'días' }}
@@ -63,7 +65,8 @@
                                     data-nombre="{{ $proveedor->nombre }}"
                                     data-ruc="{{ $proveedor->ruc }}"
                                     data-direccion="{{ $proveedor->direccion }}"
-                                    data-contacto="{{ $proveedor->contacto }}"
+                                    data-contacto-nombre="{{ $proveedor->contacto_nombre }}"
+                                    data-contacto-celular="{{ $proveedor->contacto_celular }}"
                                     data-lead-time="{{ $proveedor->lead_time_dias }}"
                                     data-url="{{ route('admin.proveedores.update', $proveedor) }}"
                                     title="Editar"
@@ -89,7 +92,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: 24px;">
+                        <td colspan="7" style="text-align: center; padding: 24px;">
                             No hay proveedores registrados todavía.
                         </td>
                     </tr>
@@ -137,7 +140,11 @@
                             value="{{ old('ruc') }}"
                             placeholder="Ej: 20512345678"
                             autocomplete="off"
-                            maxlength="20"
+                            inputmode="numeric"
+                            maxlength="11"
+                            pattern="[0-9]{11}"
+                            title="El RUC debe tener exactamente 11 dígitos numéricos"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         >
                         @error('ruc')
                             <span class="ap-form-error">{{ $message }}</span>
@@ -159,17 +166,37 @@
                         @enderror
                     </div>
                     <div class="ap-form-group">
-                        <label for="crear-contacto">Contacto</label>
+                        <label for="crear-contacto-nombre">Nombre del contacto</label>
                         <input
                             type="text"
-                            id="crear-contacto"
-                            name="contacto"
-                            class="ap-input @error('contacto') ap-input--error @enderror"
-                            value="{{ old('contacto') }}"
-                            placeholder="Ej: Juan Pérez / 987654321"
+                            id="crear-contacto-nombre"
+                            name="contacto_nombre"
+                            class="ap-input @error('contacto_nombre') ap-input--error @enderror"
+                            value="{{ old('contacto_nombre') }}"
+                            placeholder="Ej: Juan Pérez"
                             autocomplete="off"
                         >
-                        @error('contacto')
+                        @error('contacto_nombre')
+                            <span class="ap-form-error">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="ap-form-group">
+                        <label for="crear-contacto-celular">Celular</label>
+                        <input
+                            type="text"
+                            id="crear-contacto-celular"
+                            name="contacto_celular"
+                            class="ap-input @error('contacto_celular') ap-input--error @enderror"
+                            value="{{ old('contacto_celular') }}"
+                            placeholder="Ej: 987654321"
+                            autocomplete="off"
+                            inputmode="numeric"
+                            maxlength="9"
+                            pattern="[0-9]{9}"
+                            title="El celular debe tener exactamente 9 dígitos numéricos"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                        >
+                        @error('contacto_celular')
                             <span class="ap-form-error">{{ $message }}</span>
                         @enderror
                     </div>
@@ -223,7 +250,11 @@
                             name="ruc"
                             class="ap-input"
                             autocomplete="off"
-                            maxlength="20"
+                            inputmode="numeric"
+                            maxlength="11"
+                            pattern="[0-9]{11}"
+                            title="El RUC debe tener exactamente 11 dígitos numéricos"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         >
                     </div>
                     <div class="ap-form-group" style="grid-column: 1 / -1;">
@@ -237,13 +268,28 @@
                         >
                     </div>
                     <div class="ap-form-group">
-                        <label for="editar-contacto">Contacto</label>
+                        <label for="editar-contacto-nombre">Nombre del contacto</label>
                         <input
                             type="text"
-                            id="editar-contacto"
-                            name="contacto"
+                            id="editar-contacto-nombre"
+                            name="contacto_nombre"
                             class="ap-input"
                             autocomplete="off"
+                        >
+                    </div>
+                    <div class="ap-form-group">
+                        <label for="editar-contacto-celular">Celular</label>
+                        <input
+                            type="text"
+                            id="editar-contacto-celular"
+                            name="contacto_celular"
+                            class="ap-input"
+                            autocomplete="off"
+                            inputmode="numeric"
+                            maxlength="9"
+                            pattern="[0-9]{9}"
+                            title="El celular debe tener exactamente 9 dígitos numéricos"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         >
                     </div>
                     <div class="ap-form-group">
@@ -271,12 +317,13 @@
     // Pre-popular modal de edición al hacer clic en "Editar"
     document.querySelectorAll('[data-edit-proveedor]').forEach(btn => {
         btn.addEventListener('click', () => {
-            document.getElementById('editar-nombre').value    = btn.dataset.nombre;
-            document.getElementById('editar-ruc').value       = btn.dataset.ruc || '';
-            document.getElementById('editar-direccion').value = btn.dataset.direccion || '';
-            document.getElementById('editar-contacto').value  = btn.dataset.contacto || '';
-            document.getElementById('editar-lead-time').value = btn.dataset.leadTime;
-            document.getElementById('form-editar-proveedor').action = btn.dataset.url;
+            document.getElementById('editar-nombre').value           = btn.dataset.nombre;
+            document.getElementById('editar-ruc').value              = btn.dataset.ruc || '';
+            document.getElementById('editar-direccion').value        = btn.dataset.direccion || '';
+            document.getElementById('editar-contacto-nombre').value  = btn.dataset.contactoNombre || '';
+            document.getElementById('editar-contacto-celular').value = btn.dataset.contactoCelular || '';
+            document.getElementById('editar-lead-time').value        = btn.dataset.leadTime;
+            document.getElementById('form-editar-proveedor').action  = btn.dataset.url;
             openModal('modal-proveedor-editar');
         });
     });

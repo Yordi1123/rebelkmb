@@ -30,7 +30,7 @@ class InsumoRequest extends FormRequest
             'unidad_medida' => ['required', Rule::in(Insumo::UNIDADES)],
             'stock_actual' => ['required', 'numeric', 'min:0'],
             'stock_minimo' => ['required', 'numeric', 'min:0'],
-            'stock_seguridad' => ['nullable', 'numeric', 'min:0'],
+            'stock_seguridad' => ['nullable', 'numeric', 'min:0', 'lte:stock_minimo'],
             'activo' => ['nullable', 'boolean'],
         ];
     }
@@ -44,6 +44,7 @@ class InsumoRequest extends FormRequest
             'categoria_insumo_id.required' => 'Selecciona una categoría.',
             'unidad_medida.required' => 'Selecciona una unidad de medida.',
             'unidad_medida.in' => 'Esa unidad de medida no es válida.',
+            'stock_seguridad.lte' => 'El stock de seguridad no puede ser mayor que el stock mínimo.',
         ];
     }
 }

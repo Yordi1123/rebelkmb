@@ -12,7 +12,8 @@ class Proveedor extends Model
         'nombre',
         'ruc',
         'direccion',
-        'contacto',
+        'contacto_nombre',
+        'contacto_celular',
         'lead_time_dias',
     ];
 

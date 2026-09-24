@@ -345,10 +345,11 @@
 
       confirmForms.forEach(form => {
         form.addEventListener('submit', (e) => {
-          e.preventDefault();
-          formPendingSubmit = form;
-          modalMessage.textContent = form.dataset.confirm;
-          modalOverlay.classList.add('ap-modal-overlay--open');
+            e.preventDefault();
+            formPendingSubmit = form;
+            modalMessage.textContent = form.dataset.confirm;
+            modalAccept.textContent = form.dataset.confirmLabel || 'Eliminar';
+            modalOverlay.classList.add('ap-modal-overlay--open');
         });
       });
 

@@ -69,8 +69,16 @@ class InsumoController extends Controller
 
     public function update(InsumoRequest $request, Insumo $insumo): RedirectResponse
     {
+        $datos = $request->validated();
+
+        // El stock actual NUNCA se edita a mano en este formulario (regla de
+        // trazabilidad) — se ignora cualquier valor que llegue en la petición,
+        // sin importar si el campo estaba "readonly" o alguien lo forzó desde
+        // las herramientas del navegador. Solo Compras/Despachos lo modifican.
+        unset($datos['stock_actual']);
+
         $insumo->update([
-            ...$request->validated(),
+            ...$datos,
             'activo' => $request->boolean('activo'),
         ]);
 
