@@ -77,10 +77,18 @@ class InsumoController extends Controller
         // las herramientas del navegador. Solo Compras/Despachos lo modifican.
         unset($datos['stock_actual']);
 
-        $insumo->update([
+        $insumo->fill([
             ...$datos,
             'activo' => $request->boolean('activo'),
         ]);
+
+        if ($insumo->isClean()) {
+            return redirect()
+                ->route('admin.insumos.index')
+                ->with('info', 'No se ha realizado ningún cambio en el insumo.');
+        }
+
+        $insumo->save();
 
         return redirect()
             ->route('admin.insumos.index')

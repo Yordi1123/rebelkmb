@@ -18,6 +18,7 @@ class ProductoController extends Controller
         $productos = Producto::with(['categoria', 'tipo', 'sabor'])
             ->when(request('buscar'), function ($query, $buscar) {
                 $query->where('nombre', 'like', "%{$buscar}%")
+                    ->orWhere('presentacion', 'like', "%{$buscar}%")
                     ->orWhereHas('tipo', fn ($q) => $q->where('nombre', 'like', "%{$buscar}%")
                         ->orWhere('codigo', 'like', "%{$buscar}%"))
                     ->orWhereHas('sabor', fn ($q) => $q->where('nombre', 'like', "%{$buscar}%"));
@@ -74,10 +75,18 @@ class ProductoController extends Controller
 
     public function update(ProductoRequest $request, Producto $producto): RedirectResponse
     {
-        $producto->update([
+        $producto->fill([
             ...$request->validated(),
             'activo' => $request->boolean('activo'),
         ]);
+
+        if ($producto->isClean()) {
+            return redirect()
+                ->route('admin.productos.index')
+                ->with('info', 'No se ha realizado ningún cambio en el producto.');
+        }
+
+        $producto->save();
 
         return redirect()
             ->route('admin.productos.index')

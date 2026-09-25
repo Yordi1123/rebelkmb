@@ -78,6 +78,8 @@
                         <td>
                             @if (! $insumo->activo)
                                 <span class="ap-badge ap-status--yellow">Inactivo</span>
+                            @elseif ($insumo->stock_actual <= 0)
+                                <span class="ap-badge" style="background-color: #ffebe9; color: #cf222e; border: 1px solid #ff8182;">Stock Crítico</span>
                             @elseif ($insumo->stock_bajo)
                                 <span class="ap-badge ap-status--red">⚠ Stock bajo</span>
                             @else

@@ -27,11 +27,15 @@ class SaborController extends Controller
         return view('admin.sabores.create', compact('categorias'));
     }
 
-    public function store(SaborRequest $request): RedirectResponse
+    public function store(SaborRequest $request)
     {
         $data = $request->validated();
 
-        Sabor::create($data);
+        $sabor = Sabor::create($data);
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'data' => $sabor]);
+        }
 
         $mensaje = 'Sabor creado correctamente.';
 

@@ -23,14 +23,28 @@ class CategoriaInsumoController extends Controller
         return view('admin.categorias_insumo.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $data = $request->validate([
-            'nombre' => ['required', 'string', 'max:255', 'unique:categorias_insumo,nombre'],
+            'nombre'      => ['required', 'string', 'max:255', 'unique:categorias_insumo,nombre'],
             'descripcion' => ['nullable', 'string', 'max:500'],
         ]);
 
-        CategoriaInsumo::create($data);
+        $categoria = CategoriaInsumo::create($data);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'data' => $categoria
+            ]);
+        }
+
+        // Si la petición viene del modal dentro del formulario de insumo,
+        // volvemos a la página anterior para que el nuevo registro aparezca
+        // disponible en el select sin perder los datos ya ingresados.
+        if ($request->boolean('_redirect_back')) {
+            return redirect()->back()->with('success', 'Categoría creada correctamente.');
+        }
 
         return redirect()
             ->route('admin.categorias-insumo.index')

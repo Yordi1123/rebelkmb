@@ -280,7 +280,7 @@
 <div class="ap-modal-overlay" id="modal-prod-cat-crear">
     <div class="ap-modal">
         <h3>Nueva categoría</h3>
-        <form method="POST" action="{{ route('admin.categorias.store') }}">
+        <form method="POST" action="{{ route('admin.categorias.store') }}" id="form-prod-cat-crear">
             @csrf
             <input type="hidden" name="_redirect_back" value="1">
             <div class="ap-form-grid" style="margin-top:16px;">
@@ -313,7 +313,7 @@
 <div class="ap-modal-overlay" id="modal-prod-tipo-crear">
     <div class="ap-modal">
         <h3>Nuevo tipo</h3>
-        <form method="POST" action="{{ route('admin.tipos.store') }}">
+        <form method="POST" action="{{ route('admin.tipos.store') }}" id="form-prod-tipo-crear">
             @csrf
             <input type="hidden" name="_redirect_back" value="1">
             <div class="ap-form-grid" style="margin-top:16px;">
@@ -357,7 +357,7 @@
 <div class="ap-modal-overlay" id="modal-prod-sabor-crear">
     <div class="ap-modal">
         <h3>Nuevo sabor</h3>
-        <form method="POST" action="{{ route('admin.sabores.store') }}">
+        <form method="POST" action="{{ route('admin.sabores.store') }}" id="form-prod-sabor-crear">
             @csrf
             <input type="hidden" name="_redirect_back" value="1">
             <div class="ap-form-grid" style="margin-top:16px;">
@@ -382,3 +382,59 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function setupAjaxModal(formId, selectId, modalId, buildOptionFn) {
+        const form = document.getElementById(formId);
+        if (!form) return;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const select = document.getElementById(selectId);
+                    const option = buildOptionFn(data.data);
+                    select.add(option);
+                    closeModal(modalId);
+                    form.reset();
+                    // Disparar evento change para que actúen los filtros visuales
+                    select.dispatchEvent(new Event('change'));
+                } else {
+                    alert('Ocurrió un error al guardar. Verifica los datos.');
+                }
+            })
+            .catch(error => {
+                alert('Error de conexión.');
+                console.error(error);
+            });
+        });
+    }
+
+    setupAjaxModal('form-prod-cat-crear', 'categoria_id', 'modal-prod-cat-crear', function(data) {
+        return new Option(data.nombre, data.id, true, true);
+    });
+
+    setupAjaxModal('form-prod-tipo-crear', 'tipo_id', 'modal-prod-tipo-crear', function(data) {
+        let option = new Option(data.codigo + ' — ' + data.nombre, data.id, true, true);
+        option.dataset.categoria = data.categoria_id;
+        option.dataset.requiereSabor = data.requiere_sabor ? '1' : '0';
+        return option;
+    });
+
+    setupAjaxModal('form-prod-sabor-crear', 'sabor_id', 'modal-prod-sabor-crear', function(data) {
+        let option = new Option(data.nombre, data.id, true, true);
+        option.dataset.categoria = data.categoria_id;
+        return option;
+    });
+});
+</script>

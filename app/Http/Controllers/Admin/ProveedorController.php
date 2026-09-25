@@ -23,7 +23,7 @@ class ProveedorController extends Controller
         return view('admin.proveedores.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $data = $request->validate([
             'nombre'           => ['required', 'string', 'max:255'],
@@ -34,7 +34,14 @@ class ProveedorController extends Controller
             'lead_time_dias'   => ['required', 'integer', 'min:0'],
         ]);
 
-        Proveedor::create($data);
+        $proveedor = Proveedor::create($data);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'data' => $proveedor
+            ]);
+        }
 
         return redirect()
             ->route('admin.proveedores.index')

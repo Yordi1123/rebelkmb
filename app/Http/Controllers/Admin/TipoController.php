@@ -19,7 +19,7 @@ class TipoController extends Controller
         return view('admin.tipos.index', compact('tipos', 'categorias'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $data = $request->validate([
             'codigo'         => ['required', 'string', 'max:10', 'unique:tipos,codigo'],
@@ -31,7 +31,11 @@ class TipoController extends Controller
         $data['codigo']         = strtoupper($data['codigo']);
         $data['requiere_sabor'] = $request->boolean('requiere_sabor');
 
-        Tipo::create($data);
+        $tipo = Tipo::create($data);
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'data' => $tipo]);
+        }
 
         $mensaje = 'Tipo creado correctamente.';
 

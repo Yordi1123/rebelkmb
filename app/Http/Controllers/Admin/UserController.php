@@ -32,11 +32,13 @@ class UserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
+            'name'     => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'],
+            'email'    => ['required', 'email:rfc,dns', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
             'rol'      => ['required', 'string', Rule::in(self::ROLES)],
             'activo'   => ['nullable', 'boolean'],
+        ], [
+            'name.regex' => 'El nombre solo puede contener letras y espacios.'
         ]);
 
         $data['password'] = Hash::make($data['password']);
@@ -57,11 +59,13 @@ class UserController extends Controller
     public function update(Request $request, User $usuario): RedirectResponse
     {
         $data = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($usuario->id)],
+            'name'     => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'],
+            'email'    => ['required', 'email:rfc,dns', 'max:255', Rule::unique('users', 'email')->ignore($usuario->id)],
             'password' => ['nullable', 'string', 'min:8'],
             'rol'      => ['required', 'string', Rule::in(self::ROLES)],
             'activo'   => ['nullable', 'boolean'],
+        ], [
+            'name.regex' => 'El nombre solo puede contener letras y espacios.'
         ]);
 
         // Solo actualizar contraseña si se proporcionó una nueva
@@ -73,7 +77,15 @@ class UserController extends Controller
 
         $data['activo'] = $request->boolean('activo');
 
-        $usuario->update($data);
+        $usuario->fill($data);
+
+        if ($usuario->isClean()) {
+            return redirect()
+                ->route('admin.usuarios.index')
+                ->with('info', 'No se ha realizado ningún cambio en el usuario.');
+        }
+
+        $usuario->save();
 
         return redirect()
             ->route('admin.usuarios.index')

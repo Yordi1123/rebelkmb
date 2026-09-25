@@ -23,7 +23,7 @@ class CategoriaController extends Controller
         return view('admin.categorias.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:255', 'unique:categorias,nombre'],
@@ -31,7 +31,11 @@ class CategoriaController extends Controller
             'unidad_medida' => ['required', 'string', Rule::in(Categoria::UNIDADES_MEDIDA)],
         ]);
 
-        Categoria::create($data);
+        $categoria = Categoria::create($data);
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'data' => $categoria]);
+        }
 
         $mensaje = 'Categoría creada correctamente.';
 

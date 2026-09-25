@@ -11,8 +11,5 @@
         </div>
     </div>
 
-    <form method="POST" action="{{ route('admin.insumos.update', $insumo) }}">
-        @method('PUT')
-        @include('admin.insumos._form')
-    </form>
+    @include('admin.insumos._form')
 @endsection
