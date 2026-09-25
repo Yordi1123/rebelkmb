@@ -43,6 +43,15 @@ class InsumoSeeder extends Seeder
             ['codigo' => 'AZUC', 'nombre' => 'Azúcar', 'categoria_insumo_id' => $edulcorantes->id, 'proveedor_id' => $pAzucar?->id, 'unidad_medida' => 'kilogramos', 'stock_minimo' => 10, 'stock_seguridad' => 5],
 
             // ----------------------------------------------------------
+            // Productos Intermedios (Soporte para BOM multinivel)
+            // ----------------------------------------------------------
+            // Yogurt Griego Base no se compra, se fabrica in-house.
+            ['codigo' => 'YG-BASE', 'nombre' => 'Yogurt Griego Base', 'categoria_insumo_id' => $liquida->id, 'proveedor_id' => null, 'unidad_medida' => 'gramos', 'stock_minimo' => 5000, 'stock_seguridad' => 2000],
+            // Suero de Leche se genera como subproducto del Yogurt Griego
+            ['codigo' => 'SUERO', 'nombre' => 'Suero de Leche', 'categoria_insumo_id' => $liquida->id, 'proveedor_id' => null, 'unidad_medida' => 'litros', 'stock_minimo' => 0, 'stock_seguridad' => 0],
+
+
+            // ----------------------------------------------------------
             // Frutas y Saborizantes
             // ----------------------------------------------------------
             ['codigo' => 'FR-ARA', 'nombre' => 'Arándanos', 'categoria_insumo_id' => $frutas->id, 'proveedor_id' => $pAgro?->id, 'unidad_medida' => 'kilogramos', 'stock_minimo' => 5, 'stock_seguridad' => 2],
@@ -52,6 +61,13 @@ class InsumoSeeder extends Seeder
             ['codigo' => 'FR-MAR', 'nombre' => 'Maracuyá', 'categoria_insumo_id' => $frutas->id, 'proveedor_id' => $pAgro?->id, 'unidad_medida' => 'kilogramos', 'stock_minimo' => 5, 'stock_seguridad' => 2],
             ['codigo' => 'FR-PIN', 'nombre' => 'Piña', 'categoria_insumo_id' => $frutas->id, 'proveedor_id' => $pAgro?->id, 'unidad_medida' => 'kilogramos', 'stock_minimo' => 3, 'stock_seguridad' => 1],
             ['codigo' => 'FR-JEN', 'nombre' => 'Jengibre', 'categoria_insumo_id' => $frutas->id, 'proveedor_id' => $pAgro?->id, 'unidad_medida' => 'kilogramos', 'stock_minimo' => 2, 'stock_seguridad' => 1],
+            
+            // Mermeladas compradas a proveedor
+            ['codigo' => 'MERM-FRE', 'nombre' => 'Mermelada de Fresa', 'categoria_insumo_id' => $frutas->id, 'proveedor_id' => $pAgro?->id, 'unidad_medida' => 'gramos', 'stock_minimo' => 1000, 'stock_seguridad' => 500],
+            ['codigo' => 'MERM-ARA', 'nombre' => 'Mermelada de Arándanos', 'categoria_insumo_id' => $frutas->id, 'proveedor_id' => $pAgro?->id, 'unidad_medida' => 'gramos', 'stock_minimo' => 1000, 'stock_seguridad' => 500],
+            ['codigo' => 'MERM-MAR', 'nombre' => 'Mermelada de Maracuyá', 'categoria_insumo_id' => $frutas->id, 'proveedor_id' => $pAgro?->id, 'unidad_medida' => 'gramos', 'stock_minimo' => 1000, 'stock_seguridad' => 500],
+            ['codigo' => 'MERM-MAN', 'nombre' => 'Mermelada de Mango', 'categoria_insumo_id' => $frutas->id, 'proveedor_id' => $pAgro?->id, 'unidad_medida' => 'gramos', 'stock_minimo' => 1000, 'stock_seguridad' => 500],
+            ['codigo' => 'MERM-MM', 'nombre' => 'Mermelada Maracuyá-Mango', 'categoria_insumo_id' => $frutas->id, 'proveedor_id' => $pAgro?->id, 'unidad_medida' => 'gramos', 'stock_minimo' => 1000, 'stock_seguridad' => 500],
 
             // ----------------------------------------------------------
             // Cultivos y Fermentos
@@ -66,8 +82,10 @@ class InsumoSeeder extends Seeder
             // Envases y Empaques
             // ----------------------------------------------------------
             ['codigo' => 'BOT330', 'nombre' => 'Botella 330ml', 'categoria_insumo_id' => $envases->id, 'proveedor_id' => $pCristal?->id, 'unidad_medida' => 'unidades', 'stock_minimo' => 200, 'stock_seguridad' => 100],
-            ['codigo' => 'CHAPA', 'nombre' => 'Chapas (tapas botella)', 'categoria_insumo_id' => $envases->id, 'proveedor_id' => $pCristal?->id, 'unidad_medida' => 'unidades', 'stock_minimo' => 200, 'stock_seguridad' => 100],
-            ['codigo' => 'ENV150', 'nombre' => 'Envase 150ml', 'categoria_insumo_id' => $envases->id, 'proveedor_id' => $pCristal?->id, 'unidad_medida' => 'unidades', 'stock_minimo' => 100, 'stock_seguridad' => 50],
+            ['codigo' => 'ENV150', 'nombre' => 'Envase Yogurt 150ml', 'categoria_insumo_id' => $envases->id, 'proveedor_id' => $pCristal?->id, 'unidad_medida' => 'unidades', 'stock_minimo' => 100, 'stock_seguridad' => 50],
+            ['codigo' => 'ENV1L', 'nombre' => 'Envase Yogurt 1L', 'categoria_insumo_id' => $envases->id, 'proveedor_id' => $pCristal?->id, 'unidad_medida' => 'unidades', 'stock_minimo' => 100, 'stock_seguridad' => 50],
+            ['codigo' => 'CHAPA', 'nombre' => 'Chapas/Tapas', 'categoria_insumo_id' => $envases->id, 'proveedor_id' => $pCristal?->id, 'unidad_medida' => 'unidades', 'stock_minimo' => 200, 'stock_seguridad' => 100],
+            ['codigo' => 'ETIQ', 'nombre' => 'Etiquetas', 'categoria_insumo_id' => $envases->id, 'proveedor_id' => $pCristal?->id, 'unidad_medida' => 'unidades', 'stock_minimo' => 500, 'stock_seguridad' => 200],
 
             // ----------------------------------------------------------
             // Aditivos y Conservantes

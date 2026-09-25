@@ -51,5 +51,12 @@ class Producto extends Model
     {
         return $this->belongsTo(Sabor::class);
     }
+
+    public function insumos()
+    {
+        return $this->belongsToMany(Insumo::class, 'bom', 'producto_id', 'material_id')
+                    ->withPivot('id', 'cantidad_requerida', 'unidad_medida', 'etapa')
+                    ->withTimestamps();
+    }
 }
 

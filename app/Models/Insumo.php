@@ -53,4 +53,11 @@ class Insumo extends Model
     {
         return (float) $this->stock_actual <= (float) $this->stock_minimo;
     }
+
+    public function productos()
+    {
+        return $this->belongsToMany(Producto::class, 'bom', 'material_id', 'producto_id')
+                    ->withPivot('id', 'cantidad_requerida', 'unidad_medida', 'etapa')
+                    ->withTimestamps();
+    }
 }

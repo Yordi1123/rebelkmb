@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProveedorController;
 use App\Http\Controllers\Admin\InsumoController;
 use App\Http\Controllers\Admin\CategoriaInsumoController;
+use App\Http\Controllers\Admin\BomController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])
          ->name('dashboard');
     Route::resource('/productos', ProductoController::class);
+    
+    // Rutas para BOM (Receta)
+    Route::get('/productos/{producto}/bom', [BomController::class, 'index'])->name('productos.bom.index');
+    Route::post('/productos/{producto}/bom', [BomController::class, 'store'])->name('productos.bom.store');
+    Route::put('/productos/{producto}/bom/{bomId}', [BomController::class, 'update'])->name('productos.bom.update');
+    Route::delete('/productos/{producto}/bom/{bomId}', [BomController::class, 'destroy'])->name('productos.bom.destroy');
+
     Route::resource('/categorias', CategoriaController::class)->except('show');
     Route::resource('/tipos', TipoController::class)->except('show');
     Route::resource('/sabores', SaborController::class)->except('show');
